@@ -48,7 +48,7 @@ markets = pd.DataFrame([
     ["Adventmarkt im Schloss Neugebäude", "https://goo.gl/maps/SVhtiYyTX69Fnqw97", "10:00", "20:00"]
 ], columns=["Name", "Map", "Opens", "Closes"])
 
-gmaps = googlemaps.Client(key = "AIzaSyB-fDj2Jxzlr20Re3VjVRX0_50XeaxecDk")
+gmaps = googlemaps.Client(key = "String")
 
 def _addresses_from_names(df: pd.DataFrame, default_city: str = DEFAULT_CITY) -> list[str]:
     """Build geocodable address strings like "Name, Vienna, Austria" for each row."""
