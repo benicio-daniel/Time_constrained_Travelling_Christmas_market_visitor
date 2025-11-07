@@ -8,7 +8,7 @@ import time
 import googlemaps
 from datetime import datetime
 
-API_KEY = "AIzaSyDGJMwIPIcqXJl8cFlgH8Vc-dnbXfCS-Xc"  # put your key in env
+API_KEY = "String"  # put your key in env
 _AT_RE = re.compile(r"@(-?\d+\.\d+),(-?\d+\.\d+)")  # matches @lat,lng
 DEFAULT_CITY = "Vienna, Austria"
 
@@ -64,13 +64,14 @@ def compute_pairwise_distance_matrix(df: pd.DataFrame,
     rows_out = []
 
     for i, origin in enumerate(origins):
+        print("Now at:",origin)
         for j, destination in enumerate(origins):
             if i == j:
                 continue
             try:
                 resp = gmaps.distance_matrix(origins=[origin], destinations=[destination], **kwargs)
                 el = resp["rows"][0]["elements"][0]
-                print("Now at:",i)
+                
                 if el.get("status") != "OK":
                     continue
                 distance = el.get("distance", {})
