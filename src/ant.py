@@ -65,7 +65,11 @@ class Ant:
             next_market, travel_time = random.choice(options)
         elif self.mutation == 2:
             # here we add the DNA values to influence the choice
+            # here we model the selection through descete distribution based on DNA probability
             pass # Placeholder for another selection strategy
+        elif self.mutation == 3:
+            # + feronome influence
+            pass # Placeholder for yet another selection strategy
 
         # Update ant's state
         self.current_time += travel_time
@@ -74,22 +78,3 @@ class Ant:
         self.path.append((next_market, self.current_time))
 
         return True  # Move was successful
-    
-    def breed(self):
-        # Create a new ant with the same parameters
-        new_DNA = self.path.copy() # add gene manipulation logic
-        return Ant(
-            # passes surrounding context
-            opening_at=self.opening_at,
-            closing_at=self.closing_at,
-            travel_time=self.travel_time,
-            time_limit=self.time_limit,
-
-            # passes initial setup
-            start_market=self.start_market,
-            start_time=self.start_time,
-            stay_time=self.stay_time,
-            DNA=new_DNA,
-            mutation=self.mutation,
-            generation=self.generation + 1
-        )

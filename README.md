@@ -27,9 +27,10 @@ Todos: (Ben?)
 - [ ] add travel time for public transport
 - [ ] data pipline clean up (not so many notebooks etc.)
 - [ ] pipline logic so that ant can evaluate data from pipline
+- [ ] whats a fast strategie to evaluate and not have huge amount of data in memory?
 - [ ] add opening and closing time in 2. df
 - [ ] time in sec not needed? i guess distance also not needed?
--> addad ant_copy to play with
+-> eg. if walk time > 10 min then public transport etc.
 
 add:
 - [ ] gene logic
