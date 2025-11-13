@@ -1,7 +1,7 @@
 import random
 class Ant:
     def __init__(self, opening_at, closing_at, travel_time, 
-                 start_market, start_time, stay_time=30, time_limit=2300, DNA=None, mutation=1, generation=0):
+                 start_market, start_time, stay_time=30, time_limit=2300, DNA=None, generation=0, mutation=1):
         # Surrounding context
         self.opening_at = opening_at
         self.closing_at = closing_at
@@ -15,8 +15,8 @@ class Ant:
         self.current_time = start_time
         self.stay_time = stay_time
         self.DNA = DNA
-        self.mutation = mutation
         self.generation = generation
+        self.mutation = mutation
 
         # Ant's journey tracking
         self.visited = [start_market]
@@ -31,7 +31,7 @@ class Ant:
         options = []
 
         # Get all neighboring markets and travel times from the current one
-        neighbors = self.travel_time[self.current_market]
+        neighbors = self.travel_time[self.current_market] # edit to extern excess + open/closes at etc
 
         for dest, travel_time in neighbors.items():
             # Skip if this market has already been visited

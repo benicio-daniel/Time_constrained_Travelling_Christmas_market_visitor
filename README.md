@@ -23,18 +23,16 @@ You shall describe your design, coding and solution, together with an analysis o
 ¹ So technically, this is not a travelling salesperson, as you might not be able to visit all locations, but the name for this still was chosen as very descriptive in illustrating the task to solve!
 
 -----------------------------------------------------------
-Todos: (Ben?)
-- [ ] add travel time for public transport
-- [ ] data pipline clean up (not so many notebooks etc.)
-- [ ] pipline logic so that ant can evaluate data from pipline
-- [ ] whats a fast strategie to evaluate and not have huge amount of data in memory?
-- [ ] add opening and closing time in 2. df
-- [ ] time in sec not needed? i guess distance also not needed?
--> eg. if walk time > 10 min then public transport etc.
+Todos: (Ben)
+- [ ] add travel time for public transport in csv format (see csv without secs and distance) and types (int etc.)
+- [ ] add opening and closing time in one csv
+- [ ] node reduction (for triangle inequality) -> eg. if walk time > x min then public transport etc. ??? -> reduction to one travel_time need of heuritic
+- [ ] class of google maps infos (method for ant to look up, where am I, whats possible)
+- [ ] pheromone logic
 
-add:
+
+Todos: (Philipp)
 - [ ] gene logic
 - [ ] colony logic
 - [ ] model evaluation logic
-
 -> tests
