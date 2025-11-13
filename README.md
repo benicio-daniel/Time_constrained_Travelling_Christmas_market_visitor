@@ -28,7 +28,7 @@ Todos: (Ben?)
 - [ ] data pipline clean up (not so many notebooks etc.)
 - [ ] pipline logic so that ant can evaluate data from pipline
 - [ ] add opening and closing time in 2. df
-- [ ] time in sec not needed?
+- [ ] time in sec not needed? i guess distance also not needed?
 -> addad ant_copy to play with
 
 add:
