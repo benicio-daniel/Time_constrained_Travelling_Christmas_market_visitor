@@ -20,6 +20,20 @@ Further, there are the following constraints:
 
 You shall describe your design, coding and solution, together with an analysis of the results, in a report.
 
-———————
-
 ¹ So technically, this is not a travelling salesperson, as you might not be able to visit all locations, but the name for this still was chosen as very descriptive in illustrating the task to solve!
+
+-----------------------------------------------------------
+Todos: (Ben?)
+- [ ] add travel time for public transport
+- [ ] data pipline clean up (not so many notebooks etc.)
+- [ ] pipline logic so that ant can evaluate data from pipline
+- [ ] add opening and closing time in 2. df
+- [ ] time in sec not needed?
+-> addad ant_copy to play with
+
+add:
+- [ ] gene logic
+- [ ] colony logic
+- [ ] model evaluation logic
+
+-> tests
