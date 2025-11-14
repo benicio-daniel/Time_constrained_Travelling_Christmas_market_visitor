@@ -93,6 +93,88 @@ def compute_pairwise_distance_matrix(df: pd.DataFrame,
 
     return pd.DataFrame(rows_out)
 
+
+from typing import Optional
+
+def find_waypoints_on_the_way(
+    df: pd.DataFrame,
+    margin: float = 0.20,
+    mode: Optional[str] = None,
+    return_all: bool = False,
+) -> pd.DataFrame:
+    """
+    A waypoint k is "on the way" from origin i to destination j if:
+        duration(i->k) + duration(k->j) <= (1 + margin) * duration(i->j)
+
+    Requires columns: ['origin','destination','duration_seconds'] and optional 'mode'.
+    Returns columns:
+        ['origin','destination','waypoint','direct_duration_s','via_duration_s',
+         'extra_seconds','extra_fraction','on_the_way', ('mode' if available)]
+    """
+    required = {"origin", "destination", "duration_seconds"}
+    missing = required - set(df.columns)
+    if missing:
+        raise ValueError(f"Missing required columns: {sorted(missing)}")
+
+    def _compute(work_df: pd.DataFrame, mode_label: Optional[str]):
+        # lookup[(o,d)] -> duration_seconds
+        lookup = {
+            (row["origin"], row["destination"]): row["duration_seconds"]
+            for _, row in work_df.iterrows()
+        }
+        places = sorted(set(work_df["origin"]).union(set(work_df["destination"])))
+        out_rows = []
+        for o in places:
+            for d in places:
+                if o == d:
+                    continue
+                direct = lookup.get((o, d))
+                if direct is None or direct <= 0:
+                    continue
+                for k in places:
+                    if k == o or k == d:
+                        continue
+                    leg1 = lookup.get((o, k))
+                    leg2 = lookup.get((k, d))
+                    if leg1 is None or leg2 is None:
+                        continue
+                    via = leg1 + leg2
+                    extra_seconds = via - direct
+                    extra_fraction = extra_seconds / direct
+                    on_the_way = via <= (1.0 + margin) * direct
+                    if return_all or on_the_way:
+                        row = {
+                            "origin": o,
+                            "destination": d,
+                            "waypoint": k,
+                            "direct_duration_s": direct,
+                            "via_duration_s": via,
+                            "extra_seconds": extra_seconds,
+                            "extra_fraction": extra_fraction,
+                            "on_the_way": on_the_way,
+                        }
+                        if mode_label is not None:
+                            row["mode"] = mode_label
+                        out_rows.append(row)
+        return pd.DataFrame(out_rows)
+
+    if mode is not None and "mode" in df.columns:
+        return _compute(df[df["mode"] == mode].copy(), mode_label=mode)
+
+    if mode is None and "mode" in df.columns:
+        frames = [
+            _compute(df[df["mode"] == m].copy(), mode_label=m)
+            for m in sorted(df["mode"].dropna().unique())
+        ]
+        return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame(
+            columns=[
+                "origin","destination","waypoint","direct_duration_s","via_duration_s",
+                "extra_seconds","extra_fraction","on_the_way","mode"
+            ]
+        )
+
+    return _compute(df.copy(), mode_label=None)
+
 if __name__ == "__main__":
     # Build the matrix using names + city for reliable geocoding
     results_df = compute_pairwise_distance_matrix(markets, mode="walking")
