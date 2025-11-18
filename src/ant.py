@@ -1,7 +1,17 @@
 import random
 from google_maps import GoogleMaps
 class Ant:
-    def __init__(self, maps_service_objekt, start_market, start_time, stay_time=30, time_limit=2300, DNA=None, generation=0, mutation=1):
+    def __init__(
+            self, 
+            maps_service_objekt, 
+            start_market, 
+            start_time, 
+            stay_time=30, 
+            time_limit=2300, 
+            DNA=None, 
+            generation=0, 
+            mutation=1
+            ):
         # Surrounding context
         self.maps = maps_service_objekt
 
@@ -24,7 +34,7 @@ class Ant:
         # Time when the ant would leave the current market
         self.current_time += self.stay_time
         if self.current_time > self.time_limit:  # Exceeds overall time limit
-                return []
+            return []
         
         options = []
 

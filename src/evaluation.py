@@ -29,3 +29,21 @@ class manager:
     def die_out_weak_ants(self, colony):
         # Remove ants that performed poorly
         pass
+
+"""
+    class ColonyEvaluator:
+    def __init__(self, colonies):
+        self.colonies = colonies
+
+    def run_simulation(self):
+        # 1. LASS ALLE AMEISEN ALLER KOLONIEN LAUFEN
+        for colony in self.colonies:
+            for ant in colony.ants:
+                while ant.move():
+                    pass
+
+        # 2. EVALUIERE JEDE KOLONIE EINZELN
+        for colony in self.colonies:
+            colony.evaluate_fitness()
+            colony.selection()
+            colony.breed_new_generation()"""
