@@ -50,5 +50,3 @@ class GoogleMaps:
         
 if __name__ == "__main__":
 
-    GM = GoogleMaps()
-    print(GM.get_destinations("MQ"))

@@ -24,9 +24,9 @@ You shall describe your design, coding and solution, together with an analysis o
 
 -----------------------------------------------------------
 Todos: (Ben)
-- [ ] add travel time for public transport in csv format (see csv without secs and distance) and types (int etc.)
-- [ ] add opening and closing time in one csv
-- [ ] node reduction (for triangle inequality) -> eg. if walk time > x min then public transport etc. ??? -> reduction to one travel_time need of heuritic
+- [x] add travel time for public transport in csv format (see csv without secs and distance) and types (int etc.)
+- [x] add opening and closing time in one csv
+- [x] node reduction (for triangle inequality) -> eg. if walk time > x min then public transport etc. ??? -> reduction to one travel_time need of heuritic
 - [ ] class of google maps infos (method for ant to look up, where am I, whats possible)
 - [ ] pheromone logic
 

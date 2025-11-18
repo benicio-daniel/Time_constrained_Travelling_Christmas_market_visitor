@@ -7,8 +7,8 @@ from itertools import product
 import time
 import googlemaps
 from datetime import datetime
+import numpy as np
 
-API_KEY = "String"  # put your key in env
 _AT_RE = re.compile(r"@(-?\d+\.\d+),(-?\d+\.\d+)")  # matches @lat,lng
 DEFAULT_CITY = "Vienna, Austria"
 
@@ -48,136 +48,177 @@ markets = pd.DataFrame([
     ["Adventmarkt im Schloss Neugebäude", "https://goo.gl/maps/SVhtiYyTX69Fnqw97", "10:00", "20:00"]
 ], columns=["Name", "Map", "Opens", "Closes"])
 
-gmaps = googlemaps.Client(key = "String")
+gmaps = googlemaps.Client(key="string") 
+
 
 def _addresses_from_names(df: pd.DataFrame, default_city: str = DEFAULT_CITY) -> list[str]:
     """Build geocodable address strings like "Name, Vienna, Austria" for each row."""
     return [f"{name}, {default_city}" for name in df["Name"].tolist()]
 
-def compute_pairwise_distance_matrix(df: pd.DataFrame,
-                                     mode: str = "walking",
-                                     use_departure_now_for_driving: bool = True,
-                                     units: str = "metric") -> pd.DataFrame:
+
+def compute_pairwise_distance_matrix(
+    df: pd.DataFrame,
+    use_departure_now_for_driving: bool = True,
+    units: str = "metric"
+) -> pd.DataFrame:
+    """
+    Compute pairwise distance matrix for the given dataframe.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame containing the names of the markets (column 'Name').
+    use_departure_now_for_driving : bool
+        Whether to use the current time as departure time for public transport requests.
+    units : str, optional
+        Units for distance, by default "metric".
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame containing the pairwise distances for the given dataframe.
+    """
     origins = _addresses_from_names(df)
-    kwargs = {"mode": mode, "units": units, "region": "at"}
+    base_kwargs = {"units": units, "region": "at"}
 
     rows_out = []
 
     for i, origin in enumerate(origins):
-        print("Now at:",origin)
+        print("Now at:", origin, i + 1, "/", len(origins))
         for j, destination in enumerate(origins):
+            # skip self-pairs
             if i == j:
                 continue
-            try:
-                resp = gmaps.distance_matrix(origins=[origin], destinations=[destination], **kwargs)
-                el = resp["rows"][0]["elements"][0]
-                
-                if el.get("status") != "OK":
-                    continue
-                distance = el.get("distance", {})
-                duration = el.get("duration", {})
-                duration_in_traffic = el.get("duration_in_traffic")
-                rows_out.append({
-                    "origin": df.iloc[i]["Name"],
-                    "destination": df.iloc[j]["Name"],
-                    "mode": mode,
-                    "distance_meters": distance.get("value"),
-                    "distance_text": distance.get("text"),
-                    "duration_seconds": duration.get("value"),
-                    "duration_text": duration.get("text"),
-                    "duration_in_traffic_seconds": (duration_in_traffic or {}).get("value") if duration_in_traffic else None,
-                    "duration_in_traffic_text": (duration_in_traffic or {}).get("text") if duration_in_traffic else None,
-                })
-            except Exception:
+
+            # 1) Walking request
+            walk_resp = gmaps.distance_matrix(
+                origins=[origin],
+                destinations=[destination],
+                mode="walking",
+                **base_kwargs
+            )
+            walk_el = walk_resp["rows"][0]["elements"][0]
+            if walk_el.get("status") != "OK":
+                # if even walking fails, skip this pair
                 continue
+
+            walk_distance = walk_el.get("distance", {})
+            walk_duration = walk_el.get("duration", {})
+            walk_seconds = walk_duration.get("value")
+
+            # 2) Public transport request
+            transit_kwargs = base_kwargs.copy()
+            transit_kwargs["mode"] = "transit"
+            if use_departure_now_for_driving:
+                transit_kwargs["departure_time"] = datetime.now()
+
+            transit_resp = gmaps.distance_matrix(
+                origins=[origin],
+                destinations=[destination],
+                **transit_kwargs
+            )
+            transit_el = transit_resp["rows"][0]["elements"][0]
+
+            # default: use walking
+            chosen_mode = "walking"
+            chosen_distance = walk_distance
+            chosen_seconds = walk_seconds
+
+            # if transit is available, compare times
+            if transit_el.get("status") == "OK":
+                transit_distance = transit_el.get("distance", {})
+                transit_duration = transit_el.get("duration", {})
+                transit_seconds = transit_duration.get("value")
+
+                # PT is 50% faster → PT time <= 0.5 * walking time
+                if (
+                    transit_seconds is not None
+                    and walk_seconds is not None
+                    and transit_seconds <= 0.5 * walk_seconds
+                ):
+                    chosen_mode = "transit"
+                    chosen_distance = transit_distance
+                    chosen_seconds = transit_seconds
+
+            rows_out.append({
+                "origin": df.iloc[i]["Name"],
+                "destination": df.iloc[j]["Name"],
+                "mode": chosen_mode,
+                "distance_meters": chosen_distance.get("value"),
+                "duration_seconds": chosen_seconds,
+                "opens": df.iloc[j]["Opens"],
+                "closes" : df.iloc[j]["Closes"]
+                
+            })
 
     return pd.DataFrame(rows_out)
 
 
-from typing import Optional
-
-def find_waypoints_on_the_way(
-    df: pd.DataFrame,
-    margin: float = 0.20,
-    mode: Optional[str] = None,
-    return_all: bool = False,
-) -> pd.DataFrame:
+def find_inbetween_way_points(df: pd.DataFrame, margin_percent: int) -> pd.DataFrame:
     """
-    A waypoint k is "on the way" from origin i to destination j if:
-        duration(i->k) + duration(k->j) <= (1 + margin) * duration(i->j)
+    Remove direct connections (origin → destination) for which there exists a
+    waypoint k with origin → k → destination not much worse than the direct route.
 
-    Requires columns: ['origin','destination','duration_seconds'] and optional 'mode'.
-    Returns columns:
-        ['origin','destination','waypoint','direct_duration_s','via_duration_s',
-         'extra_seconds','extra_fraction','on_the_way', ('mode' if available)]
+    margin_percent: percentage tolerance (e.g. 20 for 20%).
+    We drop the direct edge if there is a via-path with
+    duration_via <= direct_duration * (1 + margin_percent / 100).
     """
-    required = {"origin", "destination", "duration_seconds"}
-    missing = required - set(df.columns)
-    if missing:
-        raise ValueError(f"Missing required columns: {sorted(missing)}")
+    df_copy = df.copy()
 
-    def _compute(work_df: pd.DataFrame, mode_label: Optional[str]):
-        # lookup[(o,d)] -> duration_seconds
-        lookup = {
-            (row["origin"], row["destination"]): row["duration_seconds"]
-            for _, row in work_df.iterrows()
-        }
-        places = sorted(set(work_df["origin"]).union(set(work_df["destination"])))
-        out_rows = []
-        for o in places:
-            for d in places:
-                if o == d:
-                    continue
-                direct = lookup.get((o, d))
-                if direct is None or direct <= 0:
-                    continue
-                for k in places:
-                    if k == o or k == d:
-                        continue
-                    leg1 = lookup.get((o, k))
-                    leg2 = lookup.get((k, d))
-                    if leg1 is None or leg2 is None:
-                        continue
-                    via = leg1 + leg2
-                    extra_seconds = via - direct
-                    extra_fraction = extra_seconds / direct
-                    on_the_way = via <= (1.0 + margin) * direct
-                    if return_all or on_the_way:
-                        row = {
-                            "origin": o,
-                            "destination": d,
-                            "waypoint": k,
-                            "direct_duration_s": direct,
-                            "via_duration_s": via,
-                            "extra_seconds": extra_seconds,
-                            "extra_fraction": extra_fraction,
-                            "on_the_way": on_the_way,
-                        }
-                        if mode_label is not None:
-                            row["mode"] = mode_label
-                        out_rows.append(row)
-        return pd.DataFrame(out_rows)
+    for idx, row in df.iterrows():
+        origin = row["origin"]
+        destination = row["destination"]
+        duration = row["duration_seconds"]
 
-    if mode is not None and "mode" in df.columns:
-        return _compute(df[df["mode"] == mode].copy(), mode_label=mode)
+        # All legs starting at origin (origin -> mid)
+        legs_from_origin = df[df["origin"] == origin]
 
-    if mode is None and "mode" in df.columns:
-        frames = [
-            _compute(df[df["mode"] == m].copy(), mode_label=m)
-            for m in sorted(df["mode"].dropna().unique())
-        ]
-        return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame(
-            columns=[
-                "origin","destination","waypoint","direct_duration_s","via_duration_s",
-                "extra_seconds","extra_fraction","on_the_way","mode"
-            ]
+        # All legs ending at destination (mid -> destination)
+        legs_to_destination = df[df["destination"] == destination]
+
+        # Join on the middle point: destination of first leg == origin of second leg
+        legs_via = legs_from_origin.merge(
+            legs_to_destination,
+            left_on="destination",
+            right_on="origin",
+            suffixes=("_1", "_2")
         )
 
-    return _compute(df.copy(), mode_label=None)
+        if legs_via.empty:
+            continue
+
+        # Total duration via the waypoint k
+        via_durations = (
+            legs_via["duration_seconds_1"] + legs_via["duration_seconds_2"]
+        )
+
+        # allowed max duration via waypoint (e.g. 20% longer than direct)
+        allowed = duration * (1 + margin_percent / 100.0)
+
+        # If any via-route is "good enough", drop the direct edge
+        if (via_durations <= allowed).any():
+            df_copy = df_copy.drop(index=idx)
+
+        
+    df_copy['duration_walking_min'] = np.ceil(df_copy['duration_seconds'] / 60).astype(int) 
+    df_copy = df_copy.drop("duration_seconds", axis=1)
+        
+    return df_copy
+
 
 if __name__ == "__main__":
     # Build the matrix using names + city for reliable geocoding
-    results_df = compute_pairwise_distance_matrix(markets, mode="walking")
+    results_df = compute_pairwise_distance_matrix(markets)
     print(results_df.shape)
     print(results_df.head())
-    results_df.to_csv("pairwise_travel_times.csv", index=False)
+
+    # Optionally simplify graph by removing edges that can be replaced
+    # by a path via another market that is at most 20% longer
+    simplified_df = find_inbetween_way_points(results_df, margin_percent=20)
+
+    BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # project root
+    DATA_DIR = os.path.join(BASE_DIR, "data")
+
+    output_path = os.path.join(DATA_DIR, "datapairwise_travel_times_simplified.csv")
+
+    simplified_df.to_csv(output_path, index=False)
