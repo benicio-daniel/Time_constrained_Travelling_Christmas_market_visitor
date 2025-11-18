@@ -38,14 +38,13 @@ class GoogleMaps:
         """
         self.df.loc[(self.df["origin"] == origin) & (self.df["destination"] == destination), "pheromone"] = pheromone
     
-    def get_open_and_close_times(self) -> tuple[dict[str, int], dict[str, int]]:
+    def get_open_and_close_times(self, market: str) -> tuple[int, int]:
         """
-        Returns two dictionaries: opening times and closing times for each market.
+        Returns the opening and closing times for a given market.
 
-        Returns:
-            tuple[dict[str, int], dict[str, int]]: 
-                - First dictionary maps market to opening time.
-                - Second dictionary maps market to closing time.
+        Args:
+            market (str): The market to get the times for.
+
         """
         pass
         

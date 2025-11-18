@@ -1,15 +1,15 @@
 import random
 from google_maps import GoogleMaps
 class Ant:
-    def __init__(self, opening_at, closing_at, travel_time, 
-                 start_market, start_time, stay_time=30, time_limit=2300, DNA=None, generation=0, mutation=1):
+    def __init__(self, maps_service_objekt, start_market, start_time, stay_time=30, time_limit=2300, DNA=None, generation=0, mutation=1):
         # Surrounding context
-        self.opening_at = opening_at
-        self.closing_at = closing_at
-        self.travel_time = travel_time
-        self.time_limit = time_limit
+        #self.opening_at = opening_at
+        #self.closing_at = closing_at
+        #self.travel_time = travel_time
+        self.maps = maps_service_objekt
 
         # Initial setup for the ant
+        self.time_limit = time_limit
         self.start_market = start_market
         self.start_time = start_time
         self.current_market = start_market
@@ -32,12 +32,15 @@ class Ant:
         options = []
 
         # Get all neighboring markets and travel times from the current one
-        neighbors = self.travel_time[self.current_market] # edit to extern excess + open/closes at etc
+        neighbors = self.maps.get_destinations(self.current_market)
 
-        for dest, travel_time in neighbors.items():
+        for dest, (travel_time, pheromone) in neighbors.items():
             # Skip if this market has already been visited
             if dest in self.visited:
                 continue
+
+            # get opening and closing times
+            opening, closing = self.maps.get_opening_closing_time(self.current_market)
 
             # Calculate time to arrive, opening and closing at the destination market
             arrival_time = self.current_time + travel_time
