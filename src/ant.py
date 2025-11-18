@@ -3,9 +3,6 @@ from google_maps import GoogleMaps
 class Ant:
     def __init__(self, maps_service_objekt, start_market, start_time, stay_time=30, time_limit=2300, DNA=None, generation=0, mutation=1):
         # Surrounding context
-        #self.opening_at = opening_at
-        #self.closing_at = closing_at
-        #self.travel_time = travel_time
         self.maps = maps_service_objekt
 
         # Initial setup for the ant
@@ -15,7 +12,7 @@ class Ant:
         self.current_market = start_market
         self.current_time = start_time
         self.stay_time = stay_time
-        self.DNA = DNA
+        self.DNA = DNA or []
         self.generation = generation
         self.mutation = mutation
 
@@ -39,41 +36,82 @@ class Ant:
             if dest in self.visited:
                 continue
 
-            # get opening and closing times
-            opening, closing = self.maps.get_opening_closing_time(self.current_market)
-
             # Calculate time to arrive, opening and closing at the destination market
             arrival_time = self.current_time + travel_time
-            open_time = self.opening_at[dest]
-            close_time = self.closing_at[dest]
+            open_time, close_time = self.maps.get_opening_closing_time(dest)
 
             # Check time constraints
-            if arrival_time < open_time:             # Arrive before opening
+            if arrival_time < open_time:                         # Arrive before opening
                 continue
-            if self.current_time > close_time:       # Leave after closing
+            if arrival_time + self.stay_time > close_time:       # Leave before closing
                 continue
 
             # Collect valid options
-            options.append((dest, travel_time))
+            options.append((dest, travel_time, pheromone))
 
         # Return all possible next markets that the ant can move to
         return options
 
     def move(self):
         options = self.evaluate_possibilities()
+
         if not options:
             return False  # No valid moves available
         
-        # Choose one destination (here randomly; later you could add heuristics)
-        if self.mutation == 1:
-            next_market, travel_time = random.choice(options)
-        elif self.mutation == 2:
-            # here we add the DNA values to influence the choice
-            # here we model the selection through descete distribution based on DNA probability
-            pass # Placeholder for another selection strategy
-        elif self.mutation == 3:
-            # + feronome influence
-            pass # Placeholder for yet another selection strategy
+        def weighted_choice(options, weights):
+                return random.choices(options, weights=weights, k=1)[0]
+        
+        # Choose one destination
+        if self.mutation == 1: # random choice
+            next_market, travel_time , pheromone = random.choice(options)
+        elif self.mutation == 2: # based on DNA
+            # Build weights based on whether the destination is in the DNA
+            weights = []
+            for dest, travel_time, pheromone in options:
+                dna_boost = 2 if dest in self.DNA else 1
+                weights.append(dna_boost)
+
+            # Normalize
+            total = sum(weights)
+            probabilities = [w / total for w in weights]
+
+            # Choose biased by DNA
+            next_market, travel_time, pheromone = random.choices(
+                options, weights=probabilities, k=1
+            )[0]
+        elif self.mutation == 3: # based on feromone
+            alpha = 1.0  # pheromone influence
+            beta = 2.0   # distance influence
+
+            weights = []
+            for dest, travel_time, pheromone in options:
+                # Classic ACO transition rule
+                w = (pheromone ** alpha) * ((1 / travel_time) ** beta)
+                weights.append(w)
+
+            next_market, travel_time, pheromone = random.choices(
+                options, weights=weights, k=1
+            )[0]
+        elif self.mutation == 4: # based on feromone and DNA
+            alpha = 1.0   # pheromone weight
+            beta = 2.0    # distance weight
+            gamma = 1.5   # DNA weight boost
+
+            weights = []
+            for dest, travel_time, pheromone in options:
+
+                dna_boost = 2 if dest in self.DNA else 1
+
+                w = (
+                    (pheromone ** alpha)
+                    * ((1 / travel_time) ** beta)
+                    * (dna_boost ** gamma)
+                )
+                weights.append(w)
+
+            next_market, travel_time, pheromone = random.choices(
+                options, weights=weights, k=1
+            )[0]
 
         # Update ant's state
         self.current_time += travel_time
