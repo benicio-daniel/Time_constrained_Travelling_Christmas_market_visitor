@@ -1,4 +1,5 @@
 import random
+from google_maps import GoogleMaps
 class Ant:
     def __init__(self, opening_at, closing_at, travel_time, 
                  start_market, start_time, stay_time=30, time_limit=2300, DNA=None, generation=0, mutation=1):
