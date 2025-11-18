@@ -58,9 +58,6 @@ class Ant:
         if not options:
             return False  # No valid moves available
         
-        def weighted_choice(options, weights):
-                return random.choices(options, weights=weights, k=1)[0]
-        
         # Choose one destination
         if self.mutation == 1: # random choice
             next_market, travel_time , pheromone = random.choice(options)
