@@ -7,8 +7,8 @@ class Ant_Colony:
         self,
         maps_service_objekt,
         number_of_ants,
-        start_market=None,
-        start_time=None,
+        start_market=None,  # have to be initialized
+        start_time=None,    # have to be initialized
         stay_time=30,
         time_limit=2300,
         initial_DNA=None,
@@ -56,9 +56,6 @@ class Ant_Colony:
         # all the ants in this colony
         self.ants = []
 
-        # store fitness scores
-        self.fitness_scores = {}
-
         # spawn initial ants
         self.spawn_ants()
 
@@ -76,7 +73,6 @@ class Ant_Colony:
 
         for i in range(self.number_of_ants):
             
-            # how to deal with start market and time????????????????????????????????
             ant = Ant(
                 maps_service_objekt=self.maps,
                 start_market=self.start_market,
@@ -102,32 +98,30 @@ class Ant_Colony:
         Returns:
             int: The fitness of the ant.
         """
-
-        return len(ant.visited) * 100 - ant.current_time # simple fitness may be improved
+        # if same length prefer the one with less time used -> (simple fitness function, may be improved)
+        return len(ant.visited) * 100 - ant.current_time
 
     def selection(self, survival_rate=0.2):
-        """
-        Selects the fittest ants from the colony based on their fitness scores.
-
-        Args:
-            survival_rate (float, optional): The proportion of ants that will survive. Defaults to 0.2.
-
-        Returns:
-            list: A list of the surviving ants.
-        """
 
         # Fitness of all ants
-        scored_ants = [
-            (ant, self.fitness(ant))
-            for ant in self.ants
-        ]
+        scored_ants = [(ant, self.fitness(ant)) for ant in self.ants]
+        fitness_values = [score for (_, score) in scored_ants]
 
-        # Sort by fitness
-        scored_ants.sort(key=lambda x: x[1], reverse=True)
+        # Fitness can be negative, shift to positive values (for roulette wheel)
+        min_f = min(fitness_values)
+        if min_f < 0:
+            # shift all fitness values so minimum becomes 1
+            fitness_values = [f - min_f + 1 for f in fitness_values]
 
-        # Selection
-        cutoff = max(1, int(len(scored_ants) * survival_rate))
-        survivors = [ant for (ant, score) in scored_ants[:cutoff]]
+        # determine number of survivors
+        num_survivors = max(2, int(len(self.ants) * survival_rate))
+
+        # Selection by roulette wheel
+        survivors = random.choices(
+            self.ants,
+            weights=fitness_values,
+            k=num_survivors
+        )
 
         return survivors
     
@@ -143,8 +137,9 @@ class Ant_Colony:
             list: The mutated DNA.
         """
 
+        # Crossover (simple one-point crossover, may be improved)
         point_of_crossover = random.randint(0, min(len(dna1)-1, len(dna2)-1))
-        return dna1[:point_of_crossover] + dna2[point_of_crossover:] # simple crossover may be improved
+        return dna1[:point_of_crossover] + dna2[point_of_crossover:]
     
     def breed(self, parent1, parent2):
         """
