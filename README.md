@@ -33,11 +33,7 @@ Todos: (Ben)
 
 
 Todos: (Philipp)
-- [ ] random start positions for ants that allready exist
+- [ ] random start positions for ants that allready exist (startzeit = öffnungszeit wo die ameise beginnt? / random start position?)
 - [ ] model evaluation logic
--> tests
-
-Fragen: 
-- [ ] wie machen wir jetzt den ganzen process? (also phasen etc.)
-- [ ] startzeit = öffnungszeit wo die ameise beginnt? / random start position?
-- [ ] gene mutation / crossover and fitness function better? 
+- [ ] gene mutation / crossover and fitness function better?
+-> tests (wie machen wir jetzt den ganzen process? (also phasen etc.))

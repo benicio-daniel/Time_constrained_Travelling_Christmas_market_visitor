@@ -199,3 +199,25 @@ class Ant_Colony:
 
         self.ants = new_ants
         self.generation += 1
+
+    def move_ants(self):
+        """
+        Move all ants in the AntColony one step forward.
+
+        For each ant, move it to the next market until it can no longer move.
+        Then, advance the generation by one step and replace the old ants with the new ones.
+
+        Returns:
+            None
+        """
+
+        paths = []
+
+        for ant in self.ants:
+            while ant.move():
+                pass
+            paths.append((ant.path, self.fitness(ant)))
+        
+        self.ants = self.next_generation()
+
+        return paths
