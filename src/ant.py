@@ -30,7 +30,16 @@ class Ant:
         self.visited = [start_market]
         self.path = [(start_market, start_time)]
 
-    def evaluate_possibilities(self):
+    def evaluate_possibilities(self): 
+        """
+        Evaluates all possible next markets that the ant can move to.
+        
+        After moving from the current market, it checks all neighboring markets and their travel times.
+        It skips markets that have already been visited and checks time constraints.
+        If the ant would arrive before the market opens or leave after the market closes, it is skipped.
+        
+        Returns a list of tuples containing the destination market, travel time and pheromone value.
+        """
         # Time when the ant would leave the current market
         self.current_time += self.stay_time
         if self.current_time > self.time_limit:  # Exceeds overall time limit
@@ -41,14 +50,13 @@ class Ant:
         # Get all neighboring markets and travel times from the current one
         neighbors = self.maps.get_destinations(self.current_market)
 
-        for dest, (travel_time, pheromone) in neighbors.items():
+        for dest, (travel_time, pheromone, open_time, close_time) in neighbors.items():
             # Skip if this market has already been visited
             if dest in self.visited:
                 continue
 
             # Calculate time to arrive, opening and closing at the destination market
             arrival_time = self.current_time + travel_time
-            open_time, close_time = self.maps.get_opening_closing_time(dest)
 
             # Check time constraints
             if arrival_time < open_time:                         # Arrive before opening
