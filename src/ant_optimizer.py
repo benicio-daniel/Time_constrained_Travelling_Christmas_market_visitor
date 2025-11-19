@@ -70,21 +70,20 @@ class AntOptimizer:
             self.colonies.append(colony)
 
 
-    def phases_of_evaluation(self, phase):
-        # Different phases of evaluation for the ants
-        if phase == 1:
-            # find eg 50% best starting markets
-            pass
-        if phase == 2:
-            # use DNA to find best routes
-            # to etablish good local search
-            # set startign pheromones
-            pass 
-        if phase == 3:
-            # sporn new ant at random positions with best DNA (fixed)
-            # use pheromone maps to guide ants (with decay?)
-            # over many days
-            pass
+    def run_one_generation(self):
+        """
+        Run one generation of the algorithm.
 
-    def run_simulation(self, phase):
-        pass
+        Move all ants in all colonies one step forward and update the pheromone map.
+
+        Returns:
+            None
+        """
+
+        paths = []
+
+        for colony in self.colonies:
+            path = colony.move_ants()
+            paths.append(path)
+        
+        self.maps.update_pheromones(paths)

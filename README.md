@@ -36,4 +36,5 @@ Todos: (Philipp)
 - [ ] random start positions for ants that allready exist (startzeit = öffnungszeit wo die ameise beginnt? / random start position?)
 - [ ] model evaluation logic
 - [ ] gene mutation / crossover and fitness function better?
+- [ ] time limit edit convert do minutes in decimal / what is end time?
 -> tests (wie machen wir jetzt den ganzen process? (also phasen etc.))
