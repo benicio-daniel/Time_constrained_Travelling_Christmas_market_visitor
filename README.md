@@ -29,12 +29,41 @@ Todos: (Ben)
 - [x] node reduction (for triangle inequality) -> eg. if walk time > x min then public transport etc. ??? -> reduction to one travel_time need of heuritic
 - [ ] class of google maps infos (method for ant to look up, where am I, whats possible)
 - [ ] pheromone logic
-- [ ] function in google maps for returning every christmas market with opening time for initialisation (see load_christmas_markets in ant_optimizer)
+- [ ] function in google maps for returning every christmas market with opening time for initialisation (see load_christmas_markets in main)
 
 
 Todos: (Philipp)
+- [ ] Idea: 1. start at every market & perform some generation, 2. choose the best and train them (random choice whack?)
 - [ ] random start positions for ants that allready exist (startzeit = öffnungszeit wo die ameise beginnt? / random start position?)
 - [ ] model evaluation logic
 - [ ] gene mutation / crossover and fitness function better?
 - [ ] time limit edit convert do minutes in decimal / what is end time?
 -> tests (wie machen wir jetzt den ganzen process? (also phasen etc.))
+
+------------------
+phases?
+
+phase = None
+
+if phase == 1:
+    # find eg 50% best starting markets
+    pass
+if phase == 2:
+    # use DNA to find best routes
+    # to etablish good local search
+    # set startign pheromones
+    pass 
+if phase == 3:
+    # sporn new ant at random positions with best DNA (fixed)
+    # use pheromone maps to guide ants (with decay?)
+    # over many days
+    pass
+
+'''
+Phase 1 = exploration
+Phase 2 = exploitation
+Phase 3 = respawn
+50 beste Startmärkte auswählt
+Mutation anpasst
+Pheromone korrekt integriert
+'''

@@ -55,5 +55,5 @@ class GoogleMaps:
         """
         self.df.loc[(self.df["origin"] == origin) & (self.df["destination"] == destination), "pheromone"] = pheromone
         
-if __name__ == "__main__":
-    pass
+#if __name__ == "__main__":
+#    pass

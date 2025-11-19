@@ -4,30 +4,53 @@ from ant import Ant
 from ant_colony import Ant_Colony
 from ant_optimizer import Ant_Optimizer
 
+def test_1(generations: int = 1,
+           ants_per_colony: int = 10,
+           stay_time: int = 30,
+           time_limit: int = 2300,
+           seed: int = 42) -> None:
+    
+    random.seed(seed)
 
-"""here happends the magic WOW!!!!!!"""
+    # ------------------------------------------------------------------
+    # 1) Load Google Maps
+    # ------------------------------------------------------------------
+    maps = GoogleMaps()
 
-phase = None
+    # All markets and opening times
+    grouped       = maps.load_christmas_markets()
+    all_markets   = grouped["origin"].tolist()
+    opening_times = grouped["opens"].tolist()
 
-if phase == 1:
-    # find eg 50% best starting markets
-    pass
-if phase == 2:
-    # use DNA to find best routes
-    # to etablish good local search
-    # set startign pheromones
-    pass 
-if phase == 3:
-    # sporn new ant at random positions with best DNA (fixed)
-    # use pheromone maps to guide ants (with decay?)
-    # over many days
-    pass
+    # ------------------------------------------------------------------
+    # 2) Initialize Optimizer therefore Colonies
+    # ------------------------------------------------------------------
+    optimizer = Ant_Optimizer(
+        maps_service_objekt = maps,
+        num_colonies        = len(all_markets),
+        ants_per_colony     = ants_per_colony,
+        stay_time           = stay_time,
+        time_limit          = time_limit,
+        mutation            = 1     # only exploration
+    )
+    optimizer.initialize_colonies(all_markets, opening_times)
 
-'''
-Phase 1 = exploration
-Phase 2 = exploitation
-Phase 3 = respawn
-50 beste Startmärkte auswählt
-Mutation anpasst
-Pheromone korrekt integriert
-'''
+    # ------------------------------------------------------------------
+    # 3) Run Simulation (may not be format of path returns)
+    # ------------------------------------------------------------------
+    for gen in range(1, generations + 1):
+        paths = optimizer.run_one_generation()   # gives paths for each colony
+        print(f"Generation {gen} abgeschlossen – {len(paths)} Colonies bewegt")
+
+    # ------------------------------------------------------------------
+    # 4) Print Results
+    # ------------------------------------------------------------------
+    print("\n=== Colony-Overview ===")
+    for idx, colony in enumerate(optimizer.colonies, 1):
+        # returns max score for each colony
+        best_score = max(score for _, score in paths[idx-1])
+        print(f"Colony {idx:2}: Start {colony.start_market:25}  Best-Fitness {best_score}")
+
+
+if __name__ == "__main__":
+    test_1()

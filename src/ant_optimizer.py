@@ -77,7 +77,7 @@ class Ant_Optimizer:
         Move all ants in all colonies one step forward and update the pheromone map.
 
         Returns:
-            None
+            list: A list of paths taken by the ants in each colony.
         """
 
         paths = []
@@ -87,3 +87,5 @@ class Ant_Optimizer:
             paths.append(path)
         
         self.maps.update_pheromones(paths)
+
+        return paths
