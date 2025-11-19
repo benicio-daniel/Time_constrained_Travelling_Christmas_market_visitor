@@ -3,7 +3,7 @@ from google_maps import GoogleMaps
 from ant import Ant
 from ant_colony import Ant_Colony
 
-class AntOptimizer:
+class Ant_Optimizer:
     def __init__(self, 
                  maps_service_objekt,
                  num_colonies=10, 

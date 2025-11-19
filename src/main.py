@@ -1,6 +1,8 @@
-#maps = GoogleMaps(api_key="XYZ")
-#markets = maps.load_christmas_markets()
-# oder so ähnlich...
+import random
+from google_maps import GoogleMaps
+from ant import Ant
+from ant_colony import Ant_Colony
+from ant_optimizer import Ant_Optimizer
 
 
 """here happends the magic WOW!!!!!!"""
