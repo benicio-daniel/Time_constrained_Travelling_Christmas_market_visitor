@@ -1,18 +1,35 @@
 import typing
 import pandas as pd
+from datetime import time
 class GoogleMaps:
     def __init__(self) -> None:
-        self.df = pd.read_csv("data/pairwise_travel_times.csv")
-    def get_destinations(self, origin: str) -> dict[str, tuple[int, float]]:
         """
-        Returns a dictionary of destinations for a given origin.
-    
+        Initialises the GoogleMaps object by reading the pairwise travel times from a csv file.
+
+        The csv file should be located in the 'data' directory and should contain columns 'origin', 'destination', 'opens', 'closes' and 'duration_seconds'.
+
+        The 'opens' and 'closes' columns should be in the format 'HH:MM' and will be converted to datetime.time objects.
+
+        The 'duration_seconds' column should contain the duration of travel in seconds between each origin and destination.
+
+        The data will be stored in a pandas DataFrame object which can be accessed through the 'df' attribute.
+
+        """
+        self.df = pd.read_csv("data/pairwise_travel_times.csv")
+        self.df["opens"] = pd.to_datetime(self.df["opens"], format="%H:%M").dt.time
+        self.df["closes"] = pd.to_datetime(self.df["closes"], format="%H:%M").dt.time
+        
+        
+        
+    def get_destinations(self, origin: str) -> dict[str, tuple[int, float, time, time]]:
+        """
+        Returns a dictionary containing the destinations and their respective travel times, pheromone values, opening and closing times for a given origin.
+
         Args:
-            origin (str): The origin of the route.
-    
+            origin (str): The origin to get the destinations for.
+
         Returns:
-            dict[str, tuple[int, float]]: Keys are destinations, values are
-            (duration_seconds, pheromone).
+            dict[str, tuple[int, float, time, time]]: A dictionary containing the destinations as keys and tuples containing the duration, pheromone, opening and closing times as values.
         """
         subset = self.df.loc[
             self.df["origin"] == origin, 
@@ -21,7 +38,7 @@ class GoogleMaps:
     
         # Convert to dictionary: destination → (duration, pheromone)
         destinations = {
-            row["destination"]: (int(row["duration_seconds"]), float(row["pheromone"]))
+            row["destination"]: (int(row["duration_seconds"]), float(row["pheromone"]), row["opens"], row["closes"])
             for _, row in subset.iterrows()
         }
     
@@ -37,16 +54,6 @@ class GoogleMaps:
 
         """
         self.df.loc[(self.df["origin"] == origin) & (self.df["destination"] == destination), "pheromone"] = pheromone
-    
-    def get_open_and_close_times(self, market: str) -> tuple[int, int]:
-        """
-        Returns the opening and closing times for a given market.
-
-        Args:
-            market (str): The market to get the times for.
-
-        """
-        pass
         
 if __name__ == "__main__":
 

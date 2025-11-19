@@ -150,7 +150,6 @@ def compute_pairwise_distance_matrix(
                 "closes" : df.iloc[j]["Closes"]
                 
             })
-
     return pd.DataFrame(rows_out)
 
 
