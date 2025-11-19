@@ -18,7 +18,7 @@ def test_1(generations: int = 1,
     maps = GoogleMaps()
 
     # All markets and opening times
-    grouped       = maps.load_christmas_markets()
+    grouped       = maps.df
     all_markets   = grouped["origin"].tolist()
     opening_times = grouped["opens"].tolist()
 
@@ -50,7 +50,7 @@ def test_1(generations: int = 1,
         # returns max score for each colony
         best_score = max(score for _, score in paths[idx-1])
         print(f"Colony {idx:2}: Start {colony.start_market:25}  Best-Fitness {best_score}")
-
+        
 
 if __name__ == "__main__":
     test_1()

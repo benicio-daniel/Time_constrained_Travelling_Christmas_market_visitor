@@ -8,7 +8,7 @@ Altes AKH,Messe,transit,6087,14:00,22:00,26
 Altes AKH,Altwiener Christkindlmarkt,walking,1244,10:00,21:00,18
 Altes AKH,Rathaus,walking,852,10:00,21:30,13
 Altes AKH,Prater / Riesenrad,transit,4609,11:00,22:00,25
-Altes AKH,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,6926,09:00,21:00,36
+Altes AKH,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,8344,09:00,21:00,33
 Altes AKH,Ottakringer Weihnachtszauber,transit,3613,11:00,22:00,21
 Am Hof,MQ,transit,1198,14:00,23:00,9
 Am Hof,Stephansplatz,walking,548,11:00,21:00,8
@@ -18,66 +18,63 @@ Am Hof,IKEA Westbahnhof,transit,3244,14:00,20:00,12
 Am Hof,Adventmark Verkehrsmuseum Remise,transit,4110,14:00,21:00,18
 Spittelberg,MQ,walking,64,14:00,23:00,1
 Stephansplatz,Am Hof,walking,548,10:00,21:00,8
-Stephansplatz,Blumengärten Hirschstetten,transit,10408,10:00,22:00,34
-Stephansplatz,Messe,transit,4260,14:00,22:00,21
+Stephansplatz,Blumengärten Hirschstetten,transit,10408,10:00,22:00,35
+Stephansplatz,Messe,transit,4260,14:00,22:00,20
 Stephansplatz,Prater / Riesenrad,transit,2936,11:00,22:00,17
 Stephansplatz,Weihnachtsmarkt am Michaelerplatz,walking,679,10:00,20:00,10
 Stephansplatz,Adventmarkt Mariahilf,transit,2586,09:00,20:00,13
 Stephansplatz,IKEA Westbahnhof,transit,3654,14:00,20:00,14
-Stephansplatz,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,7561,09:00,21:00,27
+Stephansplatz,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,7584,09:00,21:00,26
 Stephansplatz,Adventmark Verkehrsmuseum Remise,transit,3635,14:00,21:00,17
 Stephansplatz,Winterzauber im Böhmischen Prater,transit,6827,11:00,20:00,40
-Stephansplatz,Adventmarkt im Schloss Neugebäude,transit,9666,10:00,20:00,32
+Stephansplatz,Adventmarkt im Schloss Neugebäude,transit,9666,10:00,20:00,34
 Opera,Türkenschanzpark,transit,6773,12:00,22:00,30
-Opera,Palais Liechtenstein,transit,10774,11:00,21:00,37
 Opera,Karlsplatz,transit,6216,12:00,20:00,20
 Opera,Schönbrunn,walking,1555,10:00,21:00,22
+Opera,IKEA Westbahnhof,transit,3229,14:00,20:00,15
 Opera,Weihnacht im Wald,transit,3871,16:00,21:00,20
+Türkenschanzpark,Altes AKH,walking,3472,11:00,23:00,47
 Türkenschanzpark,Opera,transit,6773,11:00,21:00,30
 Türkenschanzpark,Palais Liechtenstein,walking,2956,11:00,21:00,39
-Türkenschanzpark,Karlsplatz,transit,8081,12:00,20:00,37
-Türkenschanzpark,Prater / Riesenrad,transit,7175,11:00,22:00,39
+Türkenschanzpark,Messe,transit,8653,14:00,22:00,43
 Türkenschanzpark,IKEA Westbahnhof,transit,6084,14:00,20:00,29
-Türkenschanzpark,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,7674,09:00,21:00,32
-Türkenschanzpark,Winterzauber im Böhmischen Prater,transit,16490,11:00,20:00,70
-Türkenschanzpark,Ottakringer Weihnachtszauber,transit,4185,11:00,22:00,24
+Türkenschanzpark,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,8506,09:00,21:00,33
 Maria-Theresien-Platz,MQ,walking,254,14:00,23:00,4
 Maria-Theresien-Platz,Belvedere,transit,2540,10:00,21:00,13
 Maria-Theresien-Platz,Rathaus,walking,687,10:00,21:30,10
 Maria-Theresien-Platz,Weihnachtsmarkt am Michaelerplatz,walking,517,10:00,20:00,7
 Maria-Theresien-Platz,IKEA Westbahnhof,transit,2518,14:00,20:00,10
-Maria-Theresien-Platz,Ottakringer Weihnachtszauber,transit,4250,11:00,22:00,22
 Blumengärten Hirschstetten,Stephansplatz,transit,10409,11:00,21:00,37
-Blumengärten Hirschstetten,Belvedere,transit,14513,10:00,21:00,47
 Blumengärten Hirschstetten,Karlsplatz,transit,11123,12:00,20:00,38
-Blumengärten Hirschstetten,Messe,transit,10247,14:00,22:00,40
-Blumengärten Hirschstetten,Prater / Riesenrad,transit,8628,11:00,22:00,38
+Blumengärten Hirschstetten,Messe,transit,8889,14:00,22:00,35
+Blumengärten Hirschstetten,Prater / Riesenrad,transit,8628,11:00,22:00,39
 Blumengärten Hirschstetten,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,6495,09:00,21:00,30
 Blumengärten Hirschstetten,Winterzauber im Böhmischen Prater,transit,17471,11:00,20:00,56
 Blumengärten Hirschstetten,Adventmarkt im Schloss Neugebäude,transit,11895,10:00,20:00,46
 Palais Liechtenstein,Altes AKH,walking,1309,11:00,23:00,20
-Palais Liechtenstein,Opera,transit,10250,11:00,21:00,37
-Palais Liechtenstein,Türkenschanzpark,walking,2937,12:00,22:00,45
-Palais Liechtenstein,Belvedere,transit,4859,10:00,21:00,30
-Palais Liechtenstein,Messe,transit,5379,14:00,22:00,27
+Palais Liechtenstein,Türkenschanzpark,transit,3653,12:00,22:00,22
+Palais Liechtenstein,Belvedere,transit,4859,10:00,21:00,29
+Palais Liechtenstein,Messe,transit,5379,14:00,22:00,26
 Palais Liechtenstein,Altwiener Christkindlmarkt,walking,1502,10:00,21:00,22
 Palais Liechtenstein,Rathaus,walking,1514,10:00,21:30,23
+Palais Liechtenstein,IKEA Westbahnhof,transit,5155,14:00,20:00,28
 Palais Liechtenstein,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,6740,09:00,21:00,29
 Palais Liechtenstein,Weihnacht im Wald,transit,7265,16:00,21:00,32
 Belvedere,Maria-Theresien-Platz,transit,2310,11:00,21:00,15
 Belvedere,Palais Liechtenstein,transit,4824,11:00,21:00,28
 Belvedere,Karlsplatz,walking,1457,12:00,20:00,19
-Belvedere,Prater / Riesenrad,transit,5590,11:00,22:00,24
-Belvedere,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,10019,09:00,21:00,28
+Belvedere,Prater / Riesenrad,transit,5604,11:00,22:00,24
+Belvedere,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,10057,09:00,21:00,28
 Belvedere,Winterzauber im Böhmischen Prater,walking,3645,11:00,20:00,53
 Karlsplatz,MQ,transit,962,14:00,23:00,8
 Karlsplatz,Altes AKH,transit,2569,11:00,23:00,19
 Karlsplatz,Opera,transit,6180,11:00,21:00,19
-Karlsplatz,Blumengärten Hirschstetten,transit,11120,10:00,22:00,35
+Karlsplatz,Türkenschanzpark,transit,8438,12:00,22:00,33
+Karlsplatz,Blumengärten Hirschstetten,transit,11120,10:00,22:00,37
 Karlsplatz,Schönbrunn,transit,7130,10:00,21:00,32
 Karlsplatz,Prater / Riesenrad,transit,3649,11:00,22:00,17
 Karlsplatz,Advent in der Stallburg,walking,991,11:00,20:00,15
-Karlsplatz,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,8274,09:00,21:00,28
+Karlsplatz,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,8380,09:00,21:00,27
 Karlsplatz,Weihnacht im Wald,transit,3194,16:00,21:00,15
 Messe,Altes AKH,transit,14261,11:00,23:00,25
 Messe,Stephansplatz,transit,4540,11:00,21:00,23
@@ -86,6 +83,7 @@ Messe,Palais Liechtenstein,transit,14136,11:00,21:00,28
 Messe,Altwiener Christkindlmarkt,transit,13091,10:00,21:00,17
 Messe,Rathaus,transit,13857,10:00,21:30,21
 Messe,Prater / Riesenrad,walking,1227,11:00,22:00,17
+Messe,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,10970,09:00,21:00,26
 Altwiener Christkindlmarkt,Altes AKH,walking,1236,11:00,23:00,19
 Altwiener Christkindlmarkt,Am Hof,walking,281,10:00,21:00,4
 Altwiener Christkindlmarkt,Palais Liechtenstein,walking,1502,11:00,21:00,21
@@ -95,26 +93,24 @@ Altwiener Christkindlmarkt,Prater / Riesenrad,transit,3374,11:00,22:00,19
 Altwiener Christkindlmarkt,Weihnachtsmarkt am Michaelerplatz,transit,561,10:00,20:00,4
 Rathaus,Altes AKH,walking,852,11:00,23:00,13
 Rathaus,Maria-Theresien-Platz,walking,687,11:00,21:00,10
-Rathaus,Blumengärten Hirschstetten,transit,15437,10:00,22:00,45
 Rathaus,Palais Liechtenstein,walking,1515,11:00,21:00,21
 Rathaus,Messe,transit,5696,14:00,22:00,21
 Rathaus,Altwiener Christkindlmarkt,walking,756,10:00,21:00,11
 Rathaus,Prater / Riesenrad,transit,4218,11:00,22:00,20
-Rathaus,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,8935,09:00,21:00,31
-Rathaus,Ottakringer Weihnachtszauber,transit,4283,11:00,22:00,26
+Rathaus,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,8935,09:00,21:00,32
+Rathaus,Ottakringer Weihnachtszauber,transit,4283,11:00,22:00,25
 Schönbrunn,Opera,walking,1555,11:00,21:00,21
-Schönbrunn,Belvedere,transit,6726,10:00,21:00,44
+Schönbrunn,Belvedere,transit,6750,10:00,21:00,42
 Schönbrunn,Karlsplatz,transit,7160,12:00,20:00,32
-Schönbrunn,Winterzauber im Böhmischen Prater,transit,9862,11:00,20:00,57
 Prater / Riesenrad,Altes AKH,transit,9127,11:00,23:00,25
 Prater / Riesenrad,Stephansplatz,transit,2960,11:00,21:00,17
-Prater / Riesenrad,Blumengärten Hirschstetten,transit,8625,10:00,22:00,37
+Prater / Riesenrad,Blumengärten Hirschstetten,transit,8625,10:00,22:00,38
 Prater / Riesenrad,Belvedere,transit,5590,10:00,21:00,24
 Prater / Riesenrad,Karlsplatz,transit,3673,12:00,20:00,17
 Prater / Riesenrad,Messe,walking,1227,14:00,22:00,17
 Prater / Riesenrad,Altwiener Christkindlmarkt,transit,7957,10:00,21:00,17
 Prater / Riesenrad,Rathaus,transit,8723,10:00,21:30,20
-Prater / Riesenrad,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,5681,09:00,21:00,20
+Prater / Riesenrad,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,5658,09:00,21:00,20
 Weihnachtsmarkt am Michaelerplatz,Am Hof,walking,445,10:00,21:00,6
 Weihnachtsmarkt am Michaelerplatz,Stephansplatz,walking,679,11:00,21:00,9
 Weihnachtsmarkt am Michaelerplatz,Maria-Theresien-Platz,walking,517,11:00,21:00,8
@@ -128,70 +124,66 @@ Advent in der Stallburg,Weihnachtsmarkt am Michaelerplatz,walking,114,10:00,20:0
 Adventmarkt Mariahilf,MQ,walking,635,14:00,23:00,8
 Adventmarkt Mariahilf,Am Hof,transit,2174,10:00,21:00,11
 Adventmarkt Mariahilf,Stephansplatz,transit,2613,11:00,21:00,12
-Adventmarkt Mariahilf,Opera,transit,5748,11:00,21:00,24
 Adventmarkt Mariahilf,Altwiener Christkindlmarkt,transit,2271,10:00,21:00,12
 Adventmarkt Mariahilf,Weihnachtsmarkt am Michaelerplatz,transit,2151,10:00,20:00,11
-Adventmarkt Mariahilf,Schloss Wilhelminenberg,transit,7505,11:00,20:00,44
 Adventmarkt Mariahilf,IKEA Westbahnhof,transit,1397,14:00,20:00,8
 Adventmarkt Mariahilf,Adventmark Verkehrsmuseum Remise,transit,5759,14:00,21:00,20
 Adventmarkt Mariahilf,Weihnacht im Wald,walking,1481,16:00,21:00,20
 Adventmarkt Mariahilf,Ottakringer Weihnachtszauber,transit,5174,11:00,22:00,20
+Adventmarkt Mariahilf,Adventmarkt im Schloss Neugebäude,transit,11791,10:00,20:00,36
 IKEA Westbahnhof,Am Hof,transit,3210,10:00,21:00,12
 IKEA Westbahnhof,Stephansplatz,transit,3649,11:00,21:00,13
-IKEA Westbahnhof,Türkenschanzpark,transit,6032,12:00,22:00,32
+IKEA Westbahnhof,Opera,transit,3229,11:00,21:00,14
+IKEA Westbahnhof,Türkenschanzpark,transit,6497,12:00,22:00,33
 IKEA Westbahnhof,Maria-Theresien-Platz,transit,2483,11:00,21:00,11
 IKEA Westbahnhof,Palais Liechtenstein,transit,5155,11:00,21:00,27
 IKEA Westbahnhof,Weihnachtsmarkt am Michaelerplatz,transit,3187,10:00,20:00,12
+IKEA Westbahnhof,Schloss Wilhelminenberg,transit,6706,11:00,20:00,40
 IKEA Westbahnhof,Adventmarkt Mariahilf,transit,1369,09:00,20:00,8
-IKEA Westbahnhof,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,9732,09:00,21:00,25
+IKEA Westbahnhof,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,9732,09:00,21:00,26
 IKEA Westbahnhof,Adventmark Verkehrsmuseum Remise,transit,6795,14:00,21:00,21
 IKEA Westbahnhof,Weihnacht im Wald,walking,1568,16:00,21:00,22
 IKEA Westbahnhof,Ottakringer Weihnachtszauber,transit,4375,11:00,22:00,17
-Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Altes AKH,transit,8285,11:00,23:00,30
-Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Stephansplatz,transit,7578,11:00,21:00,25
-Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Türkenschanzpark,transit,7323,12:00,22:00,34
-Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Blumengärten Hirschstetten,transit,6494,10:00,22:00,29
-Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Palais Liechtenstein,transit,6715,11:00,21:00,29
+Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Altes AKH,transit,8285,11:00,23:00,33
+Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Stephansplatz,transit,7578,11:00,21:00,26
+Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Türkenschanzpark,transit,7496,12:00,22:00,33
+Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Blumengärten Hirschstetten,transit,6494,10:00,22:00,28
+Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Palais Liechtenstein,transit,6715,11:00,21:00,30
 Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Belvedere,transit,10004,10:00,21:00,28
-Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Karlsplatz,transit,8291,12:00,20:00,26
-Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Messe,transit,6151,14:00,22:00,27
-Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Altwiener Christkindlmarkt,transit,12679,10:00,21:00,28
+Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Karlsplatz,transit,8291,12:00,20:00,27
+Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Messe,transit,5877,14:00,22:00,29
+Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Altwiener Christkindlmarkt,transit,12679,10:00,21:00,26
+Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Rathaus,transit,13445,10:00,21:30,29
 Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Prater / Riesenrad,transit,5643,11:00,22:00,20
-Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Schloss Wilhelminenberg,transit,14939,11:00,20:00,58
-Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),IKEA Westbahnhof,transit,9693,14:00,20:00,25
-Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Adventmark Verkehrsmuseum Remise,transit,9238,14:00,21:00,33
+Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),IKEA Westbahnhof,transit,9693,14:00,20:00,26
+Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Adventmark Verkehrsmuseum Remise,transit,9238,14:00,21:00,34
 Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),Winterzauber im Böhmischen Prater,transit,14301,11:00,20:00,54
 Adventmark Verkehrsmuseum Remise,Am Hof,transit,4124,10:00,21:00,19
 Adventmark Verkehrsmuseum Remise,Stephansplatz,transit,3634,11:00,21:00,16
-Adventmark Verkehrsmuseum Remise,Türkenschanzpark,transit,9375,12:00,22:00,43
 Adventmark Verkehrsmuseum Remise,Palais Liechtenstein,transit,5682,11:00,21:00,31
 Adventmark Verkehrsmuseum Remise,Adventmarkt Mariahilf,transit,5740,09:00,20:00,21
 Adventmark Verkehrsmuseum Remise,IKEA Westbahnhof,transit,6808,14:00,20:00,22
-Adventmark Verkehrsmuseum Remise,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,9274,09:00,21:00,32
-Adventmark Verkehrsmuseum Remise,Adventmarkt im Schloss Neugebäude,transit,6726,10:00,20:00,30
+Adventmark Verkehrsmuseum Remise,Adventmarkt im Schloss Neugebäude,transit,6726,10:00,20:00,29
 Weihnacht im Wald,Opera,transit,3867,11:00,21:00,19
 Weihnacht im Wald,Palais Liechtenstein,transit,7774,11:00,21:00,31
 Weihnacht im Wald,Karlsplatz,transit,3216,12:00,20:00,14
 Weihnacht im Wald,Adventmarkt Mariahilf,walking,1481,09:00,20:00,22
 Weihnacht im Wald,IKEA Westbahnhof,walking,1568,14:00,20:00,24
-Weihnacht im Wald,Adventmarkt im Schloss Neugebäude,transit,9523,10:00,20:00,45
-Winterzauber im Böhmischen Prater,Am Hof,transit,8994,10:00,21:00,43
-Winterzauber im Böhmischen Prater,Opera,transit,9264,11:00,21:00,52
+Winterzauber im Böhmischen Prater,Blumengärten Hirschstetten,transit,17490,10:00,22:00,55
 Winterzauber im Böhmischen Prater,Belvedere,walking,3645,10:00,21:00,49
+Winterzauber im Böhmischen Prater,Prater / Riesenrad,transit,9849,11:00,22:00,43
 Winterzauber im Böhmischen Prater,IKEA Westbahnhof,transit,7092,14:00,20:00,42
-Winterzauber im Böhmischen Prater,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,14316,09:00,21:00,49
+Winterzauber im Böhmischen Prater,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,14278,09:00,21:00,47
 Winterzauber im Böhmischen Prater,Adventmarkt im Schloss Neugebäude,walking,4490,10:00,20:00,60
 Ottakringer Weihnachtszauber,Altes AKH,transit,3694,11:00,23:00,18
-Ottakringer Weihnachtszauber,Opera,transit,3520,11:00,21:00,20
-Ottakringer Weihnachtszauber,Türkenschanzpark,transit,4185,12:00,22:00,24
 Ottakringer Weihnachtszauber,Maria-Theresien-Platz,transit,4409,11:00,21:00,20
 Ottakringer Weihnachtszauber,Rathaus,transit,4307,10:00,21:30,22
 Ottakringer Weihnachtszauber,Schloss Wilhelminenberg,walking,2020,11:00,20:00,35
 Ottakringer Weihnachtszauber,Adventmarkt Mariahilf,transit,5171,09:00,20:00,20
 Ottakringer Weihnachtszauber,IKEA Westbahnhof,transit,4374,14:00,20:00,17
-Ottakringer Weihnachtszauber,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,10940,09:00,21:00,34
+Ottakringer Weihnachtszauber,Christkindlmarkt Floridsdorf (am Franz-Jonas-Platz),transit,10940,09:00,21:00,35
 Adventmarkt im Schloss Neugebäude,Stephansplatz,transit,9732,11:00,21:00,34
 Adventmarkt im Schloss Neugebäude,Blumengärten Hirschstetten,transit,11907,10:00,22:00,46
-Adventmarkt im Schloss Neugebäude,Schönbrunn,transit,12237,10:00,21:00,56
+Adventmarkt im Schloss Neugebäude,Belvedere,transit,7274,10:00,21:00,36
 Adventmarkt im Schloss Neugebäude,Adventmarkt Mariahilf,transit,11839,09:00,20:00,38
 Adventmarkt im Schloss Neugebäude,Adventmark Verkehrsmuseum Remise,transit,6799,14:00,21:00,30

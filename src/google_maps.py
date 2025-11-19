@@ -2,7 +2,7 @@ import typing
 import pandas as pd
 from datetime import time
 class GoogleMaps:
-    def __init__(self) -> None:
+    def __init__(self, pheromone_decay_factor:float = 0.9, pheromone_constant:float = 1) -> None:
         """
         Initialises the GoogleMaps object by reading the pairwise travel times from a csv file.
 
@@ -18,7 +18,11 @@ class GoogleMaps:
         self.df = pd.read_csv("data/pairwise_travel_times.csv")
         self.df["opens"] = pd.to_datetime(self.df["opens"], format="%H:%M").dt.time
         self.df["closes"] = pd.to_datetime(self.df["closes"], format="%H:%M").dt.time
-        
+        self.df["pheromone"] = 1
+        assert 0 >= pheromone_decay_factor <=1
+        self.decay_factor = pheromone_decay_factor
+        self.pheromone_constant = pheromone_constant
+        self.max_pheromone = 100
         
         
     def get_destinations(self, origin: str) -> dict[str, tuple[int, float, time, time]]:
@@ -43,17 +47,27 @@ class GoogleMaps:
         }
     
         return destinations
-    def change_pheromones(self, origin: str, destination: str, pheromone: float):
+    def update_pheromones(self, paths: list[tuple[list[tuple[str, str]], float]]):
         """
-        Changes the pheromone of a given route in the dataframe.
+        Update pheromones based on a list of (path, cost) tuples.
 
         Args:
-            origin (str): The origin of the route.
-            destination (str): The destination of the route.
-            pheromone (float): The new pheromone value.
-
+            paths: List of tuples (edges, cost)
+                   edges = [(origin, destination), ...]
+                   cost = numeric path cost (lower is better)
         """
-        self.df.loc[(self.df["origin"] == origin) & (self.df["destination"] == destination), "pheromone"] = pheromone
-        
+        # 1) Evaporation
+        self.df["pheromone"] *= self.decay_factor
+
+        # 2) Deposit
+        for edges, cost in paths:
+            deposit = self.pheromone_constant / cost  # Q / L_k
+            for (origin, destination) in edges:
+                self.df.loc[
+                    (self.df["origin"] == origin) &
+                    (self.df["destination"] == destination),
+                    "pheromone"
+                ] += deposit
+        self.df["pheromone"] = self.df["pheromone"].clip(lower=1, upper=self.max_pheromone)
 #if __name__ == "__main__":
 #    pass

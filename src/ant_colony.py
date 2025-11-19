@@ -104,6 +104,19 @@ class Ant_Colony:
     def selection(self, survival_rate=0.2):
 
         # Fitness of all ants
+        """
+        Selects a number of survivors based on their fitness scores.
+
+        The selection is done by a roulette wheel, where the probability of an ant being selected is proportional to its fitness score.
+
+        The number of survivors is determined by the survival rate, which should be a value between 0 and 1. The minimum number of survivors is 2.
+
+        Args:
+            survival_rate (float, optional): The survival rate of the ants. Defaults to 0.2.
+
+        Returns:
+            list: A list of the surviving ants.
+        """
         scored_ants = [(ant, self.fitness(ant)) for ant in self.ants]
         fitness_values = [score for (_, score) in scored_ants]
 
