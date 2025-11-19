@@ -29,7 +29,7 @@ Todos: (Ben)
 - [x] node reduction (for triangle inequality) -> eg. if walk time > x min then public transport etc. ??? -> reduction to one travel_time need of heuritic
 - [ ] class of google maps infos (method for ant to look up, where am I, whats possible)
 - [ ] pheromone logic
-- [ ] function in google maps for returning every christmas market with opening time for initialisation
+- [ ] function in google maps for returning every christmas market with opening time for initialisation (see load_christmas_markets in ant_optimizer)
 
 
 Todos: (Philipp)
