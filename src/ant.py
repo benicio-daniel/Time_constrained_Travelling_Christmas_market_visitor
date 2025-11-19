@@ -12,6 +12,34 @@ class Ant:
             generation=0, 
             mutation=1
             ):
+        """
+        Initialises an Ant object with the given parameters.
+
+        Args:
+            maps_service_objekt (GoogleMaps): The Google Maps service object.
+            start_market (str): The starting market of the ant.
+            start_time (datetime): The starting time of the ant.
+            stay_time (int, optional): The time the ant spends at each market. Defaults to 30.
+            time_limit (int, optional): The overall time limit for the ant. Defaults to 2300.
+            DNA (list, optional): The DNA of the ant, used for mutation. Defaults to None.
+            generation (int, optional): The generation of the ant. Defaults to 0.
+            mutation (int, optional): The mutation type of the ant. Defaults to 1.
+
+        Attributes:
+            maps (GoogleMaps): The Google Maps service object.
+            time_limit (int): The overall time limit for the ant.
+            start_market (str): The starting market of the ant.
+            start_time (datetime): The starting time of the ant.
+            current_market (str): The current market of the ant.
+            current_time (datetime): The current time of the ant.
+            stay_time (int): The time the ant spends at each market.
+            DNA (list): The DNA of the ant, used for mutation.
+            generation (int): The generation of the ant.
+            mutation (int): The mutation type of the ant.
+            visited (list): A list of all markets the ant has visited.
+            path (list): A list of all markets the ant has visited, with their respective times.
+        """
+
         # Surrounding context
         self.maps = maps_service_objekt
 
@@ -40,6 +68,7 @@ class Ant:
         
         Returns a list of tuples containing the destination market, travel time and pheromone value.
         """
+        
         # Time when the ant would leave the current market
         self.current_time += self.stay_time
         if self.current_time > self.time_limit:  # Exceeds overall time limit
@@ -71,6 +100,23 @@ class Ant:
         return options
 
     def move(self):
+        """
+        Move the ant to the next market.
+
+        Evaluates all possible next markets that the ant can move to and chooses one based on the mutation type.
+        If no valid moves are available, returns False.
+        Otherwise, updates the ant's state and returns True.
+
+        Mutation types:
+        1. Random choice
+        2. Choice biased by DNA
+        3. Choice based on feromone
+        4. Choice based on feromone and DNA
+
+        Returns:
+            bool: Whether the move was successful
+        """
+        
         options = self.evaluate_possibilities()
 
         if not options:

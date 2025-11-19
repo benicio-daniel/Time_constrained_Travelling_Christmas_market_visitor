@@ -15,6 +15,34 @@ class Ant_Colony:
         generation=0,
         mutation=1
     ):
+        """
+        Initialises an Ant_Colony object with the given parameters.
+
+        Args:
+            maps_service_objekt (GoogleMaps): The Google Maps service object.
+            number_of_ants (int): The number of ants in the colony.
+            start_market (str, optional): The starting market of the ants. Defaults to None.
+            start_time (datetime, optional): The starting time of the ants. Defaults to None.
+            stay_time (int, optional): The time the ants spend at each market. Defaults to 30.
+            time_limit (int, optional): The overall time limit for the ants. Defaults to 2300.
+            initial_DNA (list, optional): The initial DNA of the ants. Defaults to None.
+            generation (int, optional): The generation of the ants. Defaults to 0.
+            mutation (int, optional): The mutation type of the ants. Defaults to 1.
+
+        Attributes:
+            maps (GoogleMaps): The Google Maps service object.
+            number_of_ants (int): The number of ants in the colony.
+            start_market (str): The starting market of the ants.
+            start_time (datetime): The starting time of the ants.
+            stay_time (int): The time the ants spend at each market.
+            time_limit (int): The overall time limit for the ants.
+            initial_DNA (list): The initial DNA of the ants.
+            generation (int): The generation of the ants.
+            mutation (int): The mutation type of the ants.
+            ants (list): A list of all the ants in the colony.
+            fitness_scores (dict): A dictionary containing the fitness scores of the ants.
+        """
+
         self.maps = maps_service_objekt
         self.number_of_ants = number_of_ants
         self.start_market = start_market
@@ -35,6 +63,15 @@ class Ant_Colony:
         self.spawn_ants()
 
     def spawn_ants(self):
+        """
+        Resets the list of ants and spawns a new set of ants.
+
+        The new ants are given the same parameters as the old ants, but with a new DNA, which is a copy of the initial DNA.
+
+        The new ants are then added to the list of ants.
+        
+        """
+
         self.ants = [] # reset for new ants
 
         for i in range(self.number_of_ants):
@@ -52,27 +89,118 @@ class Ant_Colony:
             )
 
             self.ants.append(ant)
-
-    def selection(self):
-        # Performs natural selection on the ants based on their performance
-        pass
     
-    def breed(self):
-        # Create a new ant with the same parameters
-        # wir brauchen ja 2 die von selection ausgewählt sind
-        new_DNA = self.path.copy() # add gene manipulation logic
-        return class.Ant( # wie auch immer
-            # passes surrounding context
-            opening_at=self.opening_at,
-            closing_at=self.closing_at,
-            travel_time=self.travel_time,
-            time_limit=self.time_limit,
+    def fitness(self, ant):
+        """
+        Calculates the fitness of an ant.
 
-            # passes initial setup
-            start_market=self.start_market,
+        The fitness is calculated as the number of markets visited multiplied by 100, minus the current time of the ant.
+
+        Args:
+            ant (Ant): The ant to calculate the fitness for.
+
+        Returns:
+            int: The fitness of the ant.
+        """
+
+        return len(ant.visited) * 100 - ant.current_time # simple fitness may be improved
+
+    def selection(self, survival_rate=0.2):
+        """
+        Selects the fittest ants from the colony based on their fitness scores.
+
+        Args:
+            survival_rate (float, optional): The proportion of ants that will survive. Defaults to 0.2.
+
+        Returns:
+            list: A list of the surviving ants.
+        """
+
+        # Fitness of all ants
+        scored_ants = [
+            (ant, self.fitness(ant))
+            for ant in self.ants
+        ]
+
+        # Sort by fitness
+        scored_ants.sort(key=lambda x: x[1], reverse=True)
+
+        # Selection
+        cutoff = max(1, int(len(scored_ants) * survival_rate))
+        survivors = [ant for (ant, score) in scored_ants[:cutoff]]
+
+        return survivors
+    
+    def mutate_dna(self, dna1, dna2):
+        """
+        Mutates the DNA of two parents by performing a crossover operation.
+
+        Args:
+            dna1 (list): The DNA of the first parent.
+            dna2 (list): The DNA of the second parent.
+
+        Returns:
+            list: The mutated DNA.
+        """
+
+        point_of_crossover = random.randint(0, min(len(dna1)-1, len(dna2)-1))
+        return dna1[:point_of_crossover] + dna2[point_of_crossover:] # simple crossover may be improved
+    
+    def breed(self, parent1, parent2):
+        """
+        Breeds a new ant by performing a crossover operation on the DNA of two parent ants.
+
+        The crossover operation is performed by taking the DNA of the two parent ants and
+        swapping them at a random point. The resulting DNA is then used to create a new ant.
+
+        Args:
+            parent1 (Ant): The first parent ant.
+            parent2 (Ant): The second parent ant.
+
+        Returns:
+            Ant: The new ant resulting from the crossover operation.
+        """
+        
+        # Extract path without times
+        dna1 = [m for (m, _) in parent1.path]
+        dna2 = [m for (m, _) in parent2.path]
+
+        # Perform mutation / crossover
+        new_dna = self.mutate_dna(dna1, dna2)
+
+        child = Ant(
+            maps_service_objekt=self.maps,
+            start_market=self.start_market, # should this be random from parents?
             start_time=self.start_time,
             stay_time=self.stay_time,
-            DNA=new_DNA,
+            time_limit=self.time_limit,
+            DNA=new_dna,
+            generation=self.generation + 1,
             mutation=self.mutation,
-            generation=self.generation + 1
         )
+
+        return child
+
+    def next_generation(self):
+        """
+        Advances the generation of the Ant Colony by one step.
+
+        Selects ants based on their fitness and breeds new ants by performing crossover operations on the selected ants.
+        The resulting new ants replace the old ants in the AntColony.
+
+        Returns:
+            None
+        """
+
+        # sourvivors
+        survivors = self.selection()
+        new_ants = []
+
+        # breeding
+        while len(new_ants) < self.number_of_ants:
+            parent1, parent2 = random.sample(survivors, 2)
+            child = self.breed(parent1, parent2)
+            new_ants.append(child)
+
+        self.ants = new_ants
+        self.generation += 1
