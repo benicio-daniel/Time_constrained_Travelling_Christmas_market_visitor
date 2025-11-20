@@ -8,8 +8,8 @@ class Ant:
     def __init__(
             self, 
             maps_service_objekt, 
-            start_market: str, 
-            start_time: datetime, 
+            start_market, 
+            start_time, 
             stay_time=30, 
             time_limit="23:00", # cause latest market closes there
             DNA=None, 
@@ -134,7 +134,7 @@ class Ant:
             weights = []
             for dest, travel_time, pheromone in options:
                 # Classic ACO transition rule
-                minutes = travel_time.total_seconds() / 60
+                minutes = travel_time
                 w = (pheromone ** alpha) * ((1 / minutes) ** beta)
                 weights.append(w)
 
@@ -151,7 +151,7 @@ class Ant:
 
                 dna_boost = 2 if dest in self.DNA else 1
 
-                minutes = travel_time.total_seconds() / 60
+                minutes = travel_time
                 w = (
                     (pheromone ** alpha)
                     * ((1 / minutes) ** beta)

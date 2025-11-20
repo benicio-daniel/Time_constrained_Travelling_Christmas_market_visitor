@@ -24,8 +24,7 @@ You shall describe your design, coding and solution, together with an analysis o
 
 -----------------------------------------------------------
 Todos: (to make it work)
-- [ ] how to get results?
-- [ ] prove of concept and return best markets & adabpt pheromones
+- [ ] why only one market?
 
 Todos: (Ben for better process)
 - [ ] komm in gruppe 13 in tuwel, ich werde schon angeschrieben ob ich alleine bin
