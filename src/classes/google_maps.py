@@ -93,7 +93,7 @@ class GoogleMaps:
         - A list of the corresponding opening times for each market in the same order as the markets list as time objects
         """
 
-        grouped = self.df.groupby("origin")["opens"].first()
+        grouped = self.df.groupby("destination")["opens"].first()
 
         all_markets = grouped.index.tolist()
         opening_times = grouped.values.tolist()
