@@ -1,16 +1,18 @@
 import typing
 import pandas as pd
 from datetime import time
+from datetime import timedelta
+
 class GoogleMaps:
     def __init__(self, pheromone_decay_factor:float = 0.9, pheromone_constant:float = 1) -> None:
         """
         Initialises the GoogleMaps object by reading the pairwise travel times from a csv file.
 
-        The csv file should be located in the 'data' directory and should contain columns 'origin', 'destination', 'opens', 'closes' and 'duration_seconds'.
+        The csv file should be located in the 'data' directory and should contain columns 'origin', 'destination', 'opens', 'closes' and 'duration_walking_min'.
 
         The 'opens' and 'closes' columns should be in the format 'HH:MM' and will be converted to datetime.time objects.
 
-        The 'duration_seconds' column should contain the duration of travel in seconds between each origin and destination.
+        The 'duration_walking_min' column should contain the duration of travel in minutes between each origin and destination.
 
         The data will be stored in a pandas DataFrame object which can be accessed through the 'df' attribute.
 
@@ -19,13 +21,13 @@ class GoogleMaps:
         self.df["opens"] = pd.to_datetime(self.df["opens"], format="%H:%M").dt.time
         self.df["closes"] = pd.to_datetime(self.df["closes"], format="%H:%M").dt.time
         self.df["pheromone"] = 1
-        assert 0 >= pheromone_decay_factor <=1
+        assert 0 <= pheromone_decay_factor <=1
         self.decay_factor = pheromone_decay_factor
         self.pheromone_constant = pheromone_constant
         self.max_pheromone = 100
         
         
-    def get_destinations(self, origin: str) -> dict[str, tuple[int, float, time, time]]:
+    def get_destinations(self, origin: str) -> dict[str, tuple[timedelta, float, time, time]]:
         """
         Returns a dictionary containing the destinations and their respective travel times, pheromone values, opening and closing times for a given origin.
 
@@ -33,20 +35,26 @@ class GoogleMaps:
             origin (str): The origin to get the destinations for.
 
         Returns:
-            dict[str, tuple[int, float, time, time]]: A dictionary containing the destinations as keys and tuples containing the duration, pheromone, opening and closing times as values.
+            dict[str, tuple[timedelta, float, time, time]]: A dictionary containing the destinations as keys and tuples containing the duration, pheromone, opening and closing times as values.
         """
         subset = self.df.loc[
             self.df["origin"] == origin, 
-            ["destination", "duration_seconds", "pheromone"]
+            ["destination", "duration_walking_min", "pheromone", "opens", "closes"]
         ]
     
-        # Convert to dictionary: destination → (duration, pheromone)
+        # Convert to dictionary: destination → (duration, pheromone, opens, closes)
         destinations = {
-            row["destination"]: (int(row["duration_seconds"]), float(row["pheromone"]), row["opens"], row["closes"])
+            row["destination"]: (
+                timedelta(minutes=int(row["duration_walking_min"])),
+                float(row["pheromone"]),
+                row["opens"],
+                row["closes"],
+            )
             for _, row in subset.iterrows()
         }
-    
+
         return destinations
+    
     def update_pheromones(self, paths: list[tuple[list[tuple[str, str]], float]]):
         """
         Update pheromones based on a list of (path, cost) tuples.
@@ -70,11 +78,11 @@ class GoogleMaps:
                 ] += deposit
         self.df["pheromone"] = self.df["pheromone"].clip(lower=1, upper=self.max_pheromone)
 
-    def get_all_markets(self) -> tuple[list[str], list[str]]:
+    def get_all_markets(self) -> tuple[list[str], list[time]]:
         """
         Returns two lists:
         - A list of all markets (strings)
-        - A list of lists containing the opening times for each market in the same order as the markets list
+        - A list of the corresponding opening times for each market in the same order as the markets list as time objects
         """
 
         grouped = self.df.groupby("origin")["opens"].first()

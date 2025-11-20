@@ -1,52 +1,32 @@
 import random
 from google_maps import GoogleMaps
 from datetime import timedelta
+from datetime import datetime
+from datetime import time
 
 class Ant:
     def __init__(
             self, 
             maps_service_objekt, 
-            start_market, 
-            start_time, 
+            start_market: str, 
+            start_time: datetime, 
             stay_time=30, 
-            time_limit=2300, 
+            time_limit="23:00", # cause latest market closes there
             DNA=None, 
             generation=0, 
             mutation=1
             ):
-        """
-        Initialises an Ant object with the given parameters.
-
-        Args:
-            maps_service_objekt (GoogleMaps): The Google Maps service object.
-            start_market (str): The starting market of the ant.
-            start_time (datetime): The starting time of the ant.
-            stay_time (int, optional): The time the ant spends at each market. Defaults to 30.
-            time_limit (int, optional): The overall time limit for the ant. Defaults to 2300.
-            DNA (list, optional): The DNA of the ant, used for mutation. Defaults to None.
-            generation (int, optional): The generation of the ant. Defaults to 0.
-            mutation (int, optional): The mutation type of the ant. Defaults to 1.
-
-        Attributes:
-            maps (GoogleMaps): The Google Maps service object.
-            time_limit (int): The overall time limit for the ant.
-            start_market (str): The starting market of the ant.
-            start_time (datetime): The starting time of the ant.
-            current_market (str): The current market of the ant.
-            current_time (datetime): The current time of the ant.
-            stay_time (int): The time the ant spends at each market.
-            DNA (list): The DNA of the ant, used for mutation.
-            generation (int): The generation of the ant.
-            mutation (int): The mutation type of the ant.
-            visited (list): A list of all markets the ant has visited.
-            path (list): A list of all markets the ant has visited, with their respective times.
-        """
 
         # Surrounding context
         self.maps = maps_service_objekt
 
         # Initial setup for the ant
-        self.time_limit = time_limit
+        if isinstance(time_limit, str):
+            h, m = time_limit.split(":")
+            self.time_limit = start_time.replace(hour=int(h), minute=int(m), second=0, microsecond=0)
+        else:
+            self.time_limit = time_limit
+        
         self.start_market = start_market
         self.start_time = start_time
         self.current_market = start_market
@@ -59,6 +39,11 @@ class Ant:
         # Ant's journey tracking
         self.visited = [start_market]
         self.path = [(start_market, start_time)]
+
+    # Helper: convert time (HH:MM) into a datetime on same day as current_time
+    def _combine(self, t: time):
+        return self.current_time.replace(hour=t.hour, minute=t.minute, second=0, microsecond=0)
+
 
     def evaluate_possibilities(self): 
         """
@@ -89,10 +74,14 @@ class Ant:
             # Calculate time to arrive, opening and closing at the destination market
             arrival_time = self.current_time + travel_time
 
+            # Convert market opens/closes (time) to datetime
+            open_dt = self._combine(open_time)
+            close_dt = self._combine(close_time)
+
             # Check time constraints
-            if arrival_time < open_time:                         # Arrive before opening
+            if arrival_time < open_dt:                         # Arrive before opening
                 continue
-            if arrival_time + self.stay_time > close_time:       # Leave before closing
+            if arrival_time + self.stay_time > close_dt:       # Leave before closing
                 continue
 
             # Collect valid options
@@ -127,6 +116,7 @@ class Ant:
         # Choose one destination
         if self.mutation == 1: # random choice
             next_market, travel_time , pheromone = random.choice(options)
+
         elif self.mutation == 2: # based on DNA
             # Build weights based on whether the destination is in the DNA
             weights = []
@@ -149,7 +139,8 @@ class Ant:
             weights = []
             for dest, travel_time, pheromone in options:
                 # Classic ACO transition rule
-                w = (pheromone ** alpha) * ((1 / travel_time) ** beta)
+                minutes = travel_time.total_seconds() / 60
+                w = (pheromone ** alpha) * ((1 / minutes) ** beta)
                 weights.append(w)
 
             next_market, travel_time, pheromone = random.choices(
@@ -165,9 +156,10 @@ class Ant:
 
                 dna_boost = 2 if dest in self.DNA else 1
 
+                minutes = travel_time.total_seconds() / 60
                 w = (
                     (pheromone ** alpha)
-                    * ((1 / travel_time) ** beta)
+                    * ((1 / minutes) ** beta)
                     * (dna_boost ** gamma)
                 )
                 weights.append(w)

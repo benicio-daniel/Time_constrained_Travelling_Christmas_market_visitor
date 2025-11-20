@@ -25,11 +25,15 @@ You shall describe your design, coding and solution, together with an analysis o
 -----------------------------------------------------------
 Todos: (to make it work)
 - [ ] time limit edit convert do minutes in decimal / what is end time? (last market closing time)
-- [ ] start a colony at every market available & perform some generation (only using DNA) and return best markets & pheromone for prove of concept
+- [ ] how to get results?
+- [ ] prove of concept and return best markets & adabpt pheromones
+
+- ist schluss einfahc wenn der späteste markt, den es gibt zu macht?
 
 Todos: (Ben for better process)
+- [ ] komm in gruppe 13 in tuwel, ich werde schon angeschrieben ob ich alleine bin
 - [ ] analysis needed? if not delete
-- [ ] does everything makes sense?
+- [ ] does everything makes sense and is sufficient? (according to theory: eg, gene mutation / crossover and fitness function better? in ant colony class)
 - [ ] choose the best X% starting markets and sporn a colony each and perform training by also updating pheromones & DNA (through mutations)
 - [ ] after training sporn single random ants to test results and play with parameters (only one gen therefore no DNA update)
 - [ ] test for multiple days (visited markets and start position add as init parameters)
@@ -39,5 +43,5 @@ argue about:
 - Phase 3 = respawn
 
 Optional todos:
-- [ ] gene mutation / crossover and fitness function better? in ant colony class
-- [ ] tune alpha, beta and gamma in ant class for pheromone/ dna weights
+- [ ] tune alpha, beta and gamma in ant class for pheromone/ dna weights and fitness functions/ coss over etc
+- [ ] test different training methods as above (maybe different mutation types/ process as above)
