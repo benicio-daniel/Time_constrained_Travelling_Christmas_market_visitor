@@ -26,8 +26,6 @@ You shall describe your design, coding and solution, together with an analysis o
 Todos: (to make it work)
 - [ ] time limit edit convert do minutes in decimal / what is end time? (last market closing time)
 - [ ] start a colony at every market available & perform some generation (only using DNA) and return best markets & pheromone for prove of concept
-- [ ] sort repository, does this work then?
-
 
 Todos: (Ben for better process)
 - [ ] analysis needed? if not delete

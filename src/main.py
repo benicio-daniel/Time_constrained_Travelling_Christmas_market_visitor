@@ -1,8 +1,8 @@
 import random
-from google_maps import GoogleMaps
-from ant import Ant
-from ant_colony import Ant_Colony
-from ant_optimizer import Ant_Optimizer
+from classes.google_maps import GoogleMaps
+from classes.ant import Ant
+from classes.ant_colony import Ant_Colony
+from classes.ant_optimizer import Ant_Optimizer
 
 def test_1(generations: int = 1,
            ants_per_colony: int = 10,
