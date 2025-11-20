@@ -1,7 +1,7 @@
-import typing
 import pandas as pd
 from datetime import time
 from datetime import timedelta
+from pathlib import Path
 
 class GoogleMaps:
     def __init__(self, pheromone_decay_factor:float = 0.9, pheromone_constant:float = 1) -> None:
@@ -17,17 +17,25 @@ class GoogleMaps:
         The data will be stored in a pandas DataFrame object which can be accessed through the 'df' attribute.
 
         """
-        self.df = pd.read_csv("data/pairwise_travel_times.csv")
+        
+        # haven't found a better way to do this
+        CSV_PATH = Path(__file__).resolve().parents[2] / "data" / "datapairwise_travel_times_simplified.csv"
+
+        self.df = pd.read_csv(CSV_PATH)
         self.df["opens"] = pd.to_datetime(self.df["opens"], format="%H:%M").dt.time
         self.df["closes"] = pd.to_datetime(self.df["closes"], format="%H:%M").dt.time
+        def to_minutes(t):
+            return t.hour * 60 + t.minute
+        self.df["opens_min"] = self.df["opens"].apply(to_minutes)
+        self.df["closes_min"] = self.df["closes"].apply(to_minutes)
+
         self.df["pheromone"] = 1
         assert 0 <= pheromone_decay_factor <=1
         self.decay_factor = pheromone_decay_factor
         self.pheromone_constant = pheromone_constant
         self.max_pheromone = 100
-        
-        
-    def get_destinations(self, origin: str) -> dict[str, tuple[timedelta, float, time, time]]:
+    
+    def get_destinations(self, origin: str) -> dict[str, tuple[int, float, time, time]]:
         """
         Returns a dictionary containing the destinations and their respective travel times, pheromone values, opening and closing times for a given origin.
 
@@ -35,20 +43,20 @@ class GoogleMaps:
             origin (str): The origin to get the destinations for.
 
         Returns:
-            dict[str, tuple[timedelta, float, time, time]]: A dictionary containing the destinations as keys and tuples containing the duration, pheromone, opening and closing times as values.
+            dict[str, tuple[int, float, time, time]]: A dictionary containing the destinations as keys and tuples containing the duration, pheromone, opening and closing times as values.
         """
         subset = self.df.loc[
             self.df["origin"] == origin, 
-            ["destination", "duration_walking_min", "pheromone", "opens", "closes"]
+            ["destination", "duration_walking_min", "pheromone", "opens_min", "closes_min"]
         ]
     
         # Convert to dictionary: destination → (duration, pheromone, opens, closes)
         destinations = {
             row["destination"]: (
-                timedelta(minutes=int(row["duration_walking_min"])),
+                int(row["duration_walking_min"]),
                 float(row["pheromone"]),
-                row["opens"],
-                row["closes"],
+                int(row["opens_min"]),
+                int(row["closes_min"]),
             )
             for _, row in subset.iterrows()
         }

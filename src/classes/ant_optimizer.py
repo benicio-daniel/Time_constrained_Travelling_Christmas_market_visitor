@@ -1,7 +1,7 @@
 import random
-from google_maps import GoogleMaps
-from ant import Ant
-from ant_colony import Ant_Colony
+from classes.google_maps import GoogleMaps
+from classes.ant import Ant
+from classes.ant_colony import Ant_Colony
 
 class Ant_Optimizer:
     def __init__(self, 
@@ -93,8 +93,8 @@ class Ant_Optimizer:
         paths = []
 
         for colony in self.colonies:
-            path = colony.move_ants()
-            paths.append(path)
+            path = colony.move_ants() # [(edges, cost), ...]
+            paths.extend(path)        # flatten
         
         self.maps.update_pheromones(paths)
 

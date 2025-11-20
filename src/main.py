@@ -5,7 +5,7 @@ from classes.ant_colony import Ant_Colony
 from classes.ant_optimizer import Ant_Optimizer
 
 def test_1(generations: int = 10,
-           ants_per_colony: int = 32,
+           ants_per_colony: int = 20,
            stay_time: int = 30,
            time_limit: str = "23:00", # cause latest market closes there
            cut_off: float = 0.5,

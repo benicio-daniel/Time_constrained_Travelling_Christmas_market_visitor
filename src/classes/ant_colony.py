@@ -1,6 +1,6 @@
 import random
-from google_maps import GoogleMaps
-from ant import Ant
+from classes.google_maps import GoogleMaps
+from classes.ant import Ant
 
 class Ant_Colony:
     def __init__(
@@ -99,7 +99,7 @@ class Ant_Colony:
             int: The fitness of the ant.
         """
         # if same length prefer the one with less time used -> (simple fitness function, may be improved)
-        return len(ant.visited) * 100 - ant.current_time
+        return len(ant.visited) * 100 - ant.current_min / 60
 
     def selection(self, survival_rate=0.2):
 
@@ -138,56 +138,29 @@ class Ant_Colony:
 
         return survivors
     
-    def mutate_dna(self, dna1, dna2):
-        """
-        Mutates the DNA of two parents by performing a crossover operation.
-
-        Args:
-            dna1 (list): The DNA of the first parent.
-            dna2 (list): The DNA of the second parent.
-
-        Returns:
-            list: The mutated DNA.
-        """
-
-        # Crossover (simple one-point crossover, may be improved)
-        point_of_crossover = random.randint(0, min(len(dna1)-1, len(dna2)-1))
-        return dna1[:point_of_crossover] + dna2[point_of_crossover:]
-    
     def breed(self, parent1, parent2):
         """
-        Breeds a new ant by performing a crossover operation on the DNA of two parent ants.
+        Breeds two ants and returns their offspring.
 
-        The crossover operation is performed by taking the DNA of the two parent ants and
-        swapping them at a random point. The resulting DNA is then used to create a new ant.
+        The breeding process consists of a simple one-point crossover.
+
+        The DNA of the offspring is a combination of the DNA of the two parents, where the point of crossover is chosen randomly.
 
         Args:
-            parent1 (Ant): The first parent ant.
-            parent2 (Ant): The second parent ant.
+            parent1 (Ant): The first ant to breed.
+            parent2 (Ant): The second ant to breed.
 
         Returns:
-            Ant: The new ant resulting from the crossover operation.
+            list: The DNA of the offspring.
         """
-        
+
         # Extract path without times
         dna1 = [m for (m, _) in parent1.path]
         dna2 = [m for (m, _) in parent2.path]
 
-        # Perform mutation / crossover
-        new_dna = self.mutate_dna(dna1, dna2)
-
-        child = Ant(
-            maps_service_objekt=self.maps,
-            start_market=self.start_market, # should this be random from parents?
-            start_time=self.start_time,
-            stay_time=self.stay_time,
-            time_limit=self.time_limit,
-            DNA=new_dna,
-            generation=self.generation + 1,
-            mutation=self.mutation,
-        )
-
-        return child
+        # Crossover (simple one-point crossover, may be improved)
+        point_of_crossover = random.randint(0, min(len(dna1)-1, len(dna2)-1))
+        return dna1[:point_of_crossover] + dna2[point_of_crossover:]
 
     def next_generation(self):
         """
@@ -207,11 +180,26 @@ class Ant_Colony:
         # breeding
         while len(new_ants) < self.number_of_ants:
             parent1, parent2 = random.sample(survivors, 2)
-            child = self.breed(parent1, parent2)
-            new_ants.append(child)
 
-        self.ants = new_ants
+            # breed() returns a DNA LIST
+            child_dna = self.breed(parent1, parent2)
+
+            # create a NEW Ant object with that DNA
+            ant = Ant(
+                maps_service_objekt=self.maps,
+                start_market=self.start_market,
+                start_time=self.start_time,
+                stay_time=self.stay_time,
+                time_limit=self.time_limit,
+                DNA=child_dna.copy(),
+                generation=self.generation + 1,
+                mutation=self.mutation,
+            )
+
+            new_ants.append(ant)
+
         self.generation += 1
+        return new_ants
 
     def move_ants(self):
         """
@@ -229,7 +217,13 @@ class Ant_Colony:
         for ant in self.ants:
             while ant.move():
                 pass
-            paths.append((ant.path, self.fitness(ant)))
+
+            # ant.path: [(market, time), (market, time), ...]
+            markets_only = [m for (m, _) in ant.path]
+        
+            # make edges → [(m0, m1), (m1, m2), ...]
+            edges = list(zip(markets_only[:-1], markets_only[1:]))
+            paths.append((edges, self.fitness(ant)))
         
         self.ants = self.next_generation()
 

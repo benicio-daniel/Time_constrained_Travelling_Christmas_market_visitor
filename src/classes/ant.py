@@ -1,8 +1,8 @@
 import random
-from google_maps import GoogleMaps
+from classes.google_maps import GoogleMaps
 from datetime import timedelta
 from datetime import datetime
-from datetime import time
+from datetime import time, date
 
 class Ant:
     def __init__(
@@ -21,17 +21,21 @@ class Ant:
         self.maps = maps_service_objekt
 
         # Initial setup for the ant
-        if isinstance(time_limit, str):
-            h, m = time_limit.split(":")
-            self.time_limit = start_time.replace(hour=int(h), minute=int(m), second=0, microsecond=0)
-        else:
-            self.time_limit = time_limit
+        h, m = map(int, time_limit.split(":"))
+        self.time_limit_min = h*60 + m
         
         self.start_market = start_market
-        self.start_time = start_time
+        if isinstance(start_time, str):
+            h,m = map(int, start_time.split(":"))
+            self.current_min = h*60 + m
+        elif isinstance(start_time, time):
+            self.current_min = start_time.hour*60 + start_time.minute
+        else:
+            raise ValueError("Unsupported start_time type")
+
+        self.start_time = self.current_min
         self.current_market = start_market
-        self.current_time = start_time
-        self.stay_time = timedelta(minutes=stay_time)
+        self.stay_time = stay_time
         self.DNA = DNA or []
         self.generation = generation
         self.mutation = mutation
@@ -39,11 +43,6 @@ class Ant:
         # Ant's journey tracking
         self.visited = [start_market]
         self.path = [(start_market, start_time)]
-
-    # Helper: convert time (HH:MM) into a datetime on same day as current_time
-    def _combine(self, t: time):
-        return self.current_time.replace(hour=t.hour, minute=t.minute, second=0, microsecond=0)
-
 
     def evaluate_possibilities(self): 
         """
@@ -57,8 +56,8 @@ class Ant:
         """
         
         # Time when the ant would leave the current market
-        self.current_time += self.stay_time
-        if self.current_time > self.time_limit:  # Exceeds overall time limit
+        self.current_min += self.stay_time
+        if self.current_min > self.time_limit_min:  # Exceeds overall time limit
             return []
         
         options = []
@@ -66,22 +65,18 @@ class Ant:
         # Get all neighboring markets and travel times from the current one
         neighbors = self.maps.get_destinations(self.current_market)
 
-        for dest, (travel_time, pheromone, open_time, close_time) in neighbors.items():
+        for dest, (travel_time, pheromone, open_min, close_min) in neighbors.items():
             # Skip if this market has already been visited
             if dest in self.visited:
                 continue
 
             # Calculate time to arrive, opening and closing at the destination market
-            arrival_time = self.current_time + travel_time
-
-            # Convert market opens/closes (time) to datetime
-            open_dt = self._combine(open_time)
-            close_dt = self._combine(close_time)
+            arrival_time = self.current_min + travel_time
 
             # Check time constraints
-            if arrival_time < open_dt:                         # Arrive before opening
+            if arrival_time < open_min:                         # Arrive before opening
                 continue
-            if arrival_time + self.stay_time > close_dt:       # Leave before closing
+            if arrival_time + self.stay_time > close_min:       # Leave before closing
                 continue
 
             # Collect valid options
@@ -169,9 +164,11 @@ class Ant:
             )[0]
 
         # Update ant's state
-        self.current_time += travel_time
+        self.current_min += travel_time
         self.current_market = next_market
         self.visited.append(next_market)
-        self.path.append((next_market, self.current_time))
+        h = self.current_min // 60
+        m = self.current_min % 60
+        self.path.append((next_market, f"{h:02d}:{m:02d}"))
 
         return True  # Move was successful
