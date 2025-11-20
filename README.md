@@ -24,11 +24,8 @@ You shall describe your design, coding and solution, together with an analysis o
 
 -----------------------------------------------------------
 Todos: (to make it work)
-- [ ] time limit edit convert do minutes in decimal / what is end time? (last market closing time)
 - [ ] how to get results?
 - [ ] prove of concept and return best markets & adabpt pheromones
-
-- ist schluss einfahc wenn der späteste markt, den es gibt zu macht?
 
 Todos: (Ben for better process)
 - [ ] komm in gruppe 13 in tuwel, ich werde schon angeschrieben ob ich alleine bin

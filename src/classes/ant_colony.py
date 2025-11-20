@@ -10,7 +10,7 @@ class Ant_Colony:
         start_market=None,  # have to be initialized
         start_time=None,    # have to be initialized
         stay_time=30,
-        time_limit="23:00",
+        time_limit="23:00", # cause latest market closes there
         initial_DNA=None,
         generation=0,
         mutation=1

@@ -9,7 +9,7 @@ class Ant_Optimizer:
                  num_colonies=10, 
                  ants_per_colony=20,
                  stay_time=30,
-                 time_limit="23:00",
+                 time_limit="23:00", # cause latest market closes there
                  initial_DNA=None,
                  generation=0,
                  mutation=1

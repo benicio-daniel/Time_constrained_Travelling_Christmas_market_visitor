@@ -4,10 +4,11 @@ from classes.ant import Ant
 from classes.ant_colony import Ant_Colony
 from classes.ant_optimizer import Ant_Optimizer
 
-def test_1(generations: int = 1,
-           ants_per_colony: int = 10,
+def test_1(generations: int = 10,
+           ants_per_colony: int = 32,
            stay_time: int = 30,
-           time_limit: int = 2300,
+           time_limit: str = "23:00", # cause latest market closes there
+           cut_off: float = 0.5,
            seed: int = 42) -> None:
     
     random.seed(seed)
@@ -34,21 +35,38 @@ def test_1(generations: int = 1,
     optimizer.initialize_colonies(all_markets, opening_times)
 
     # ------------------------------------------------------------------
-    # 3) Run Simulation (may not be format of path returns)
+    # 3) Run Simulation
     # ------------------------------------------------------------------
     for gen in range(1, generations + 1):
         paths = optimizer.run_one_generation()   # gives paths for each colony
         print(f"Generation {gen} finished.")
 
     # ------------------------------------------------------------------
-    # 4) Print Results
+    # 4) Print Results (best cut-off% starting markets by there score)
     # ------------------------------------------------------------------
-    print("\n=== Colony-Overview ===")
-    for idx, colony in enumerate(optimizer.colonies, 1):
-        # returns max score for each colony
-        best_score = max(score for _, score in paths[idx-1])
-        print(f"Colony {idx:2}: Start {colony.start_market:25}  Best-Fitness {best_score}")
-        
+    
+    results = []
+    for colony in optimizer.colonies:
+        visited_counts = [len(ant.visited) for ant in colony.ants]
+        avg_visited = sum(visited_counts) / len(visited_counts)
+        results.append((colony.start_market, avg_visited))
+
+    # Sort descending (best → worst)
+    results.sort(key=lambda x: x[1], reverse=True)
+
+    # Determine how many markets to return
+    cutoff_count = max(1, int(len(results) * cut_off))
+    top_markets = results[:cutoff_count]
+
+    print("\n=== Colony Ranking by Avg Visited Markets ===")
+    print(f"Top {cut_off*100:.0f}% ({cutoff_count} von {len(results)} Startlocations)\n")
+
+    for market, avg_score in top_markets:
+        print(f"- {market:25s}  Ø visited: {avg_score:.2f}")
+
+    # Only print market names (if that’s what you want)
+    print("\nTop Markets (Names Only):")
+    print([m for m, _ in top_markets])
 
 if __name__ == "__main__":
     test_1()
