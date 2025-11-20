@@ -1,5 +1,7 @@
 import random
 from google_maps import GoogleMaps
+from datetime import timedelta
+
 class Ant:
     def __init__(
             self, 
@@ -49,7 +51,7 @@ class Ant:
         self.start_time = start_time
         self.current_market = start_market
         self.current_time = start_time
-        self.stay_time = stay_time
+        self.stay_time = timedelta(minutes=stay_time)
         self.DNA = DNA or []
         self.generation = generation
         self.mutation = mutation

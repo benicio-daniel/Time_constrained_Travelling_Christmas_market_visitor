@@ -10,7 +10,7 @@ class Ant_Colony:
         start_market=None,  # have to be initialized
         start_time=None,    # have to be initialized
         stay_time=30,
-        time_limit=2300,
+        time_limit="23:00",
         initial_DNA=None,
         generation=0,
         mutation=1
@@ -24,7 +24,7 @@ class Ant_Colony:
             start_market (str, optional): The starting market of the ants. Defaults to None.
             start_time (datetime, optional): The starting time of the ants. Defaults to None.
             stay_time (int, optional): The time the ants spend at each market. Defaults to 30.
-            time_limit (int, optional): The overall time limit for the ants. Defaults to 2300.
+            time_limit (int, optional): The overall time limit for the ants. Defaults to "23:00".
             initial_DNA (list, optional): The initial DNA of the ants. Defaults to None.
             generation (int, optional): The generation of the ants. Defaults to 0.
             mutation (int, optional): The mutation type of the ants. Defaults to 1.

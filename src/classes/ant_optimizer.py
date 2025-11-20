@@ -9,7 +9,7 @@ class Ant_Optimizer:
                  num_colonies=10, 
                  ants_per_colony=20,
                  stay_time=30,
-                 time_limit=2300,
+                 time_limit="23:00",
                  initial_DNA=None,
                  generation=0,
                  mutation=1
@@ -39,17 +39,27 @@ class Ant_Optimizer:
 
     def initialize_colonies(self, all_markets, open_times):
         """
-        Initializes the colonies with random starting positions.
+        Initializes the colonies with random starting.
+        If more colonies than markets are requested, the markets are distributed evenly.
+        The rest (or if less colonies than markets are requested) are distributed randomly without replacement.
 
         Args:
             all_markets (list): A list of all available markets.
             open_times (list): A list of opening times for each market.
         """
+        num_markets = len(all_markets)
+        indices = []
 
-        for _ in range(self.num_colonies):
+        # gets equal distribution for all markets
+        while len(indices) < self.num_colonies:
+            block = list(range(num_markets))
+            random.shuffle(block)
+            indices.extend(block)
 
-            # choose random index
-            idx = random.randrange(len(all_markets))
+        # Auf richtige Länge kürzen
+        indices = indices[:self.num_colonies]
+
+        for idx in indices:
 
             # aligned values
             start_market = all_markets[idx]

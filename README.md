@@ -24,13 +24,14 @@ You shall describe your design, coding and solution, together with an analysis o
 
 -----------------------------------------------------------
 Todos: (to make it work)
-- [ ] start a colony at every market available & perform some generation (only using DNA) and return best markets
+- [ ] start a colony at every market available & perform some generation (only using DNA) and return best markets & pheromone for prove of concept
 - [ ] time limit edit convert do minutes in decimal / what is end time? (last market closing time)
+- [ ] sort repository (eg. analysis needed? maybe every py script except main in one folder (does this work then))
 
 
 Todos: (Ben for better process)
 - [ ] does everything makes sense?
-- [ ] choose the best X% starting markets and sporn a colony each and perform training by also updating pheromones & DNA 
+- [ ] choose the best X% starting markets and sporn a colony each and perform training by also updating pheromones & DNA (through mutations)
 - [ ] after training sporn single random ants to test results and play with parameters (only one gen therefore no DNA update)
 - [ ] test for multiple days (visited markets and start position add as init parameters)
 argue about:
