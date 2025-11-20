@@ -69,5 +69,16 @@ class GoogleMaps:
                     "pheromone"
                 ] += deposit
         self.df["pheromone"] = self.df["pheromone"].clip(lower=1, upper=self.max_pheromone)
-#if __name__ == "__main__":
-#    pass
+
+    def get_all_markets(self) -> tuple[list[str], list[str]]:
+        """
+        Returns two lists:
+        - A list of all markets (strings)
+        - A list of lists containing the opening times for each market in the same order as the markets list
+        """
+
+        grouped = self.df.groupby("origin")["opens"].first()
+
+        all_markets = grouped.index.tolist()
+        opening_times = grouped.values.tolist()
+        return all_markets, opening_times

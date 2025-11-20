@@ -18,9 +18,7 @@ def test_1(generations: int = 1,
     maps = GoogleMaps()
 
     # All markets and opening times
-    grouped       = maps.df
-    all_markets   = grouped["origin"].tolist()
-    opening_times = grouped["opens"].tolist()
+    all_markets, opening_times  = maps.get_all_markets()
 
     # ------------------------------------------------------------------
     # 2) Initialize Optimizer therefore Colonies
@@ -40,7 +38,7 @@ def test_1(generations: int = 1,
     # ------------------------------------------------------------------
     for gen in range(1, generations + 1):
         paths = optimizer.run_one_generation()   # gives paths for each colony
-        print(f"Generation {gen} abgeschlossen – {len(paths)} Colonies bewegt")
+        print(f"Generation {gen} finished.")
 
     # ------------------------------------------------------------------
     # 4) Print Results

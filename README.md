@@ -23,47 +23,21 @@ You shall describe your design, coding and solution, together with an analysis o
 ¹ So technically, this is not a travelling salesperson, as you might not be able to visit all locations, but the name for this still was chosen as very descriptive in illustrating the task to solve!
 
 -----------------------------------------------------------
-Todos: (Ben)
-- [x] add travel time for public transport in csv format (see csv without secs and distance) and types (int etc.)
-- [x] add opening and closing time in one csv
-- [x] node reduction (for triangle inequality) -> eg. if walk time > x min then public transport etc. ??? -> reduction to one travel_time need of heuritic
-- [ ] class of google maps infos (method for ant to look up, where am I, whats possible)
-- [ ] pheromone logic
-- [ ] function in google maps for returning every christmas market with opening time for initialisation (see load_christmas_markets in main)
+Todos: (to make it work)
+- [ ] start a colony at every market available & perform some generation (only using DNA) and return best markets
+- [ ] time limit edit convert do minutes in decimal / what is end time? (last market closing time)
 
 
-Todos: (Philipp)
-- [ ] Idea: 1. start at every market & perform some generation, 2. choose the best and train them (random choice whack?)
-- [ ] random start positions for ants that allready exist (startzeit = öffnungszeit wo die ameise beginnt? / random start position?)
-- [ ] model evaluation logic
-- [ ] gene mutation / crossover and fitness function better?
-- [ ] time limit edit convert do minutes in decimal / what is end time?
--> tests (wie machen wir jetzt den ganzen process? (also phasen etc.))
+Todos: (Ben for better process)
+- [ ] does everything makes sense?
+- [ ] choose the best X% starting markets and sporn a colony each and perform training by also updating pheromones & DNA 
+- [ ] after training sporn single random ants to test results and play with parameters (only one gen therefore no DNA update)
+- [ ] test for multiple days (visited markets and start position add as init parameters)
+argue about:
+- Phase 1 = exploration
+- Phase 2 = exploitation
+- Phase 3 = respawn
 
-------------------
-phases?
-
-phase = None
-
-if phase == 1:
-    # find eg 50% best starting markets
-    pass
-if phase == 2:
-    # use DNA to find best routes
-    # to etablish good local search
-    # set startign pheromones
-    pass 
-if phase == 3:
-    # sporn new ant at random positions with best DNA (fixed)
-    # use pheromone maps to guide ants (with decay?)
-    # over many days
-    pass
-
-'''
-Phase 1 = exploration
-Phase 2 = exploitation
-Phase 3 = respawn
-50 beste Startmärkte auswählt
-Mutation anpasst
-Pheromone korrekt integriert
-'''
+Optional todos:
+- [ ] gene mutation / crossover and fitness function better? in ant colony class
+- [ ] tune alpha, beta and gamma in ant class for pheromone/ dna weights
