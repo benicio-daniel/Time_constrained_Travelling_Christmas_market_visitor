@@ -1,12 +1,13 @@
 import random
-from classes.google_maps import GoogleMaps
+from .google_maps import GoogleMaps
 from datetime import timedelta
 from datetime import datetime
 from datetime import time, date
 
 class Ant:
     def __init__(
-            self, 
+            self,
+            name,
             maps_service_objekt, 
             start_market, 
             start_time, 
@@ -14,7 +15,8 @@ class Ant:
             time_limit="23:00", # cause latest market closes there
             DNA=None, 
             generation=0, 
-            mutation=1
+            mutation=1,
+            verbose = 0
             ):
 
         # Surrounding context
@@ -32,7 +34,7 @@ class Ant:
             self.current_min = start_time.hour*60 + start_time.minute
         else:
             raise ValueError("Unsupported start_time type")
-
+        self.name = name
         self.start_time = self.current_min
         self.current_market = start_market
         self.stay_time = stay_time
@@ -41,9 +43,10 @@ class Ant:
         self.mutation = mutation
 
         # Ant's journey tracking
-        self.visited = [start_market]
+        self.visited = []
+        self.visited.append(start_market)
         self.path = [(start_market, start_time)]
-
+        self.verbose = verbose
     def evaluate_possibilities(self): 
         """
         Evaluates all possible next markets that the ant can move to.
@@ -81,8 +84,9 @@ class Ant:
 
             # Collect valid options
             options.append((dest, travel_time, pheromone))
-
         # Return all possible next markets that the ant can move to
+        if self.verbose == 3:
+            print(f"options: {options}")
         return options
 
     def move(self):
@@ -162,13 +166,23 @@ class Ant:
             next_market, travel_time, pheromone = random.choices(
                 options, weights=weights, k=1
             )[0]
-
+        
         # Update ant's state
         self.current_min += travel_time
+        self.old_market = self.current_market
         self.current_market = next_market
         self.visited.append(next_market)
         h = self.current_min // 60
         m = self.current_min % 60
         self.path.append((next_market, f"{h:02d}:{m:02d}"))
-
+        if self.verbose == 3:
+            print(f"{self.name}\n")
+            print(f"Moved from {self.old_market} to {self.current_market} at {h:02d}:{m:02d}\n")
+            print(f"Visited markets: {self.visited}\n")
+            
         return True  # Move was successful
+
+
+if __name__ == "__main__":
+    test_ant = Ant(GoogleMaps(), "MQ", "10:00",verbose=True)
+    test_ant.move()

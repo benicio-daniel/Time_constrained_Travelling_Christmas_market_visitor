@@ -1,6 +1,6 @@
 import random
-from classes.google_maps import GoogleMaps
-from classes.ant import Ant
+from .google_maps import GoogleMaps
+from .ant import Ant
 
 class Ant_Colony:
     def __init__(
@@ -13,7 +13,8 @@ class Ant_Colony:
         time_limit="23:00", # cause latest market closes there
         initial_DNA=None,
         generation=0,
-        mutation=1
+        mutation=1,
+        verbose = 2
     ):
         """
         Initialises an Ant_Colony object with the given parameters.
@@ -52,14 +53,11 @@ class Ant_Colony:
         self.initial_DNA = initial_DNA or []
         self.generation = generation
         self.mutation = mutation
-
+        self.verbose = verbose
         # all the ants in this colony
-        self.ants = []
+        self.ants = self.spawn_ants()
 
-        # spawn initial ants
-        self.spawn_ants()
-
-    def spawn_ants(self):
+    def spawn_ants(self) -> list:
         """
         Resets the list of ants and spawns a new set of ants.
 
@@ -69,11 +67,12 @@ class Ant_Colony:
         
         """
 
-        self.ants = [] # reset for new ants
+        ants = [] # reset for new ants
 
         for i in range(self.number_of_ants):
             
             ant = Ant(
+                name = f"{self.start_market} Ant {i+1}",
                 maps_service_objekt=self.maps,
                 start_market=self.start_market,
                 start_time=self.start_time,
@@ -82,10 +81,11 @@ class Ant_Colony:
                 DNA=self.initial_DNA.copy(),
                 generation=self.generation,
                 mutation=self.mutation,
+                verbose = self.verbose
             )
 
-            self.ants.append(ant)
-    
+            ants.append(ant)
+        return ants
     def fitness(self, ant):
         """
         Calculates the fitness of an ant.
@@ -186,6 +186,7 @@ class Ant_Colony:
 
             # create a NEW Ant object with that DNA
             ant = Ant(
+                name = f"{self.start_market} Ant {len(new_ants)+1}",
                 maps_service_objekt=self.maps,
                 start_market=self.start_market,
                 start_time=self.start_time,
@@ -224,7 +225,17 @@ class Ant_Colony:
             # make edges → [(m0, m1), (m1, m2), ...]
             edges = list(zip(markets_only[:-1], markets_only[1:]))
             paths.append((edges, self.fitness(ant)))
-        
-        self.ants = self.next_generation()
+        if self.verbose == 2:
+            print(paths)
+
 
         return paths
+    
+    def step_generation(self):
+        """
+        Advance the generation by one step and replace the old ants with the new ones.
+
+        Returns:
+            None
+        """
+        self.ants = self.next_generation()

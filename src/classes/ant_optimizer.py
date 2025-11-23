@@ -1,7 +1,7 @@
 import random
-from classes.google_maps import GoogleMaps
-from classes.ant import Ant
-from classes.ant_colony import Ant_Colony
+from .google_maps import GoogleMaps
+from .ant import Ant
+from .ant_colony import Ant_Colony
 
 class Ant_Optimizer:
     def __init__(self, 
@@ -12,7 +12,8 @@ class Ant_Optimizer:
                  time_limit="23:00", # cause latest market closes there
                  initial_DNA=None,
                  generation=0,
-                 mutation=1
+                 mutation=1,
+                 verbose = 1
                  ):
         """
         Initialises an AntOptimizer object with the given parameters.
@@ -34,7 +35,7 @@ class Ant_Optimizer:
         self.initial_DNA = initial_DNA
         self.generation = generation
         self.mutation = mutation
-
+        self.verbose = verbose
         self.colonies = []  # list of AntColonies
 
     def initialize_colonies(self, all_markets, open_times):
@@ -59,8 +60,7 @@ class Ant_Optimizer:
         # Auf richtige Länge kürzen
         indices = indices[:self.num_colonies]
 
-        for idx in indices:
-
+        for idx in indices:           
             # aligned values
             start_market = all_markets[idx]
             start_time = open_times[idx]
@@ -74,7 +74,8 @@ class Ant_Optimizer:
                 time_limit=self.time_limit,
                 initial_DNA=self.initial_DNA,
                 generation=self.generation,
-                mutation=self.mutation
+                mutation=self.mutation,
+                verbose = self.verbose
             )
 
             self.colonies.append(colony)
@@ -94,8 +95,17 @@ class Ant_Optimizer:
 
         for colony in self.colonies:
             path = colony.move_ants() # [(edges, cost), ...]
-            paths.extend(path)        # flatten
+            paths.extend(path) # flatten
+            
         
         self.maps.update_pheromones(paths)
+        if self.verbose ==1:
+            print(paths[0])
 
         return paths
+    def advance_to_next_generation(self):
+        for colony in self.colonies:
+            colony.step_generation()
+        
+        self.generation += 1
+        print(f"Advanced to Generation: {self.generation +1}")
