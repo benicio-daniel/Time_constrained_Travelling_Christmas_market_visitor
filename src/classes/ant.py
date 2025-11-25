@@ -145,12 +145,37 @@ class Ant:
         options = self.evaluate_possibilities()
 
         if not options:
-            if (self.visited != self.maps.get_all_markets()[0].sort()) &  (self.days < self.max_days):
-                self.start_market, self.start_time = random.choice(self.maps.get_all_markets(visited_markets=self.visited))
-                self.mutation = 3
+            # Try to start a new day if there are still unvisited markets and days left
+            all_markets, opening_times = self.maps.get_all_markets(visited_markets=self.visited)
+            if all_markets and self.days < self.max_days:
+                # Pick a new starting market for the next day
+                idx = random.randrange(len(all_markets))
+                new_start_market = all_markets[idx]
+                new_start_time_obj = opening_times[idx]
+
+                # Reset position and time for the new day
+                self.start_market = new_start_market
+                self.current_market = new_start_market
+                self.current_min = new_start_time_obj.hour * 60 + new_start_time_obj.minute
+                self.start_time = f"{new_start_time_obj.hour:02d}:{new_start_time_obj.minute:02d}"
+
+                # Track new day and force pheromone-based behavior
                 self.days += 1
-            else: return False # No valid moves available
-        
+                self.mutation = 3
+
+                # Record the new day's starting point in the path and visited list
+                self.visited.append(new_start_market)
+                self.path.append((new_start_market, self.start_time))
+
+                # Re-evaluate possible moves from the new starting point
+                options = self.evaluate_possibilities()
+                if not options:
+                    # Even on a new day, no options – stop moving
+                    return False
+            else:
+                # No more days or no unvisited markets left
+                return False  # No valid moves available
+    
         # Choose one destination
         if self.mutation == 1: # random choice
             next_market, travel_time , pheromone = random.choice(options)

@@ -321,7 +321,7 @@ if __name__ == "__main__":
     final_df = apply_public_transport(simplified_df, markets)
 
     # Optional: add a duration in whole minutes for convenience
-    final_df["duration_min"] = np.ceil(final_df["duration_seconds"] / 60).astype(int)
+    final_df["duration_walking_min"] = np.ceil(final_df["duration_seconds"] / 60).astype(int)
     final_df.drop(columns=["duration_seconds"], inplace=True)
     
     #save to csv

@@ -12,7 +12,7 @@ import networkx as nx
 def cull_colonies(ant_optimizer:Ant_Optimizer,top_colonies:list[tuple[str, float]]):
     for colonies in ant_optimizer.colonies:
         if colonies.start_market in (i[0] for i in top_colonies):
-            colonies.remove(colonies)
+            ant_optimizer.colonies.remove(colonies)
         
 
 def test_1(mutation: int,
@@ -27,7 +27,8 @@ def test_1(mutation: int,
            time_to_cull: int | None = None,
            set_multiple_days: bool = False,
            time_to_set_mult_days: int | None = None,
-           multiple_days_limit: int = 3) -> None:
+           multiple_days_limit: int = 3,
+           time_to_switch_pheromones: int | None = None) -> None:
     
     """
     Runs a simulation of the Ant Colony Optimization algorithm on the given parameters.
@@ -44,6 +45,8 @@ def test_1(mutation: int,
     verbose (int, optional): The verbosity of the simulation. Defaults to 0. 1 prints fitness, 2 prints evaluation table every generation
     time_to_cull (int | None, optional): The generation after which to cull the worst-performing colonies. Defaults to None.
     set_multiple_days (bool, optional): Whether the ants can visit markets multiple times in a single day. Defaults to False.
+    time_to_set_mult_days (int | None, optional): The generation in which ants are allowed to visit markets over multiple days. Defaults to None.
+    time_to_switch_pheromones (int | None, optional): The generation in which the algorithm switches to pheromone-based behavior (for plotting markers only). Defaults to None.
 
     Returns:
     None
@@ -78,6 +81,23 @@ def test_1(mutation: int,
     )
     optimizer.initialize_colonies(all_markets, opening_times)
 
+    # ------------------------------------------------------------------
+    # Determine generations at which special events occur (for plotting)
+    # ------------------------------------------------------------------
+    cull_generation = time_to_cull if time_to_cull is not None else None
+
+    # When multiple days are enabled:
+    # - if set_multiple_days is True from the start, treat generation 1 as the switch
+    # - if time_to_set_mult_days is given, use that generation
+    multiday_generation = None
+    if set_multiple_days:
+        multiday_generation = 1
+    elif time_to_set_mult_days is not None:
+        multiday_generation = time_to_set_mult_days
+
+    # Pheromone switch (purely for visualization; actual switch handled elsewhere)
+    pheromone_generation = time_to_switch_pheromones if time_to_switch_pheromones is not None else None
+
        # ------------------------------------------------------------------
     # 3) Run Simulation
     # ------------------------------------------------------------------
@@ -85,6 +105,7 @@ def test_1(mutation: int,
     for gen in range(1, generations + 1):
         if gen == time_to_set_mult_days or set_multiple_days:
             optimizer.set_ants_multiple_days(multiple_days_limit)
+            print("Enabled multiple days for ants.")
 
         paths = optimizer.run_one_generation()  # gives paths for each colony
         print(f"Generation {gen} finished.")
@@ -120,7 +141,8 @@ def test_1(mutation: int,
         top_markets = results[:cutoff_count]
 
         if gen == time_to_cull and time_to_cull is not None:
-            cull_colonies(optimizer, top_markets) #
+            cull_colonies(optimizer, top_markets) 
+            print("Colonies culled")
 
         if gen == generations or verbose == 2:
             print("\n=== Colony Ranking by Avg Visited Markets ===")
@@ -151,6 +173,15 @@ def test_1(mutation: int,
     plt.figure()
     plt.plot(generations_range, gen_avg_fitness, marker='o', label='Average fitness')
     plt.plot(generations_range, gen_max_fitness, marker='o', label='Max fitness')
+
+    # Mark special generations (if any)
+    if cull_generation is not None and 1 <= cull_generation <= generations:
+        plt.axvline(cull_generation, linestyle='--', linewidth=1, label='Cull colonies')
+    if multiday_generation is not None and 1 <= multiday_generation <= generations:
+        plt.axvline(multiday_generation, linestyle=':', linewidth=1, label='Multiple days')
+    if pheromone_generation is not None and 1 <= pheromone_generation <= generations:
+        plt.axvline(pheromone_generation, linestyle='-.', linewidth=1, label='Pheromones')
+
     plt.xlabel('Generation')
     plt.ylabel('Fitness')
     plt.title(f'Fitness over Generations (mutation {mutation})')
@@ -177,6 +208,15 @@ def test_1(mutation: int,
         if market in top_market_names and series:
             gens = range(1, len(series) + 1)
             plt.plot(gens, series, marker='o', label=market)
+
+    # Mark special generations (if any)
+    if cull_generation is not None and 1 <= cull_generation <= generations:
+        plt.axvline(cull_generation, linestyle='--', linewidth=1, label='Cull colonies')
+    if multiday_generation is not None and 1 <= multiday_generation <= generations:
+        plt.axvline(multiday_generation, linestyle=':', linewidth=1, label='Multiple days')
+    if pheromone_generation is not None and 1 <= pheromone_generation <= generations:
+        plt.axvline(pheromone_generation, linestyle='-.', linewidth=1, label='Pheromones')
+
     plt.xlabel('Generation')
     plt.ylabel('Average visited markets')
     plt.title(f'Average visited per starting market (mutation {mutation})')
@@ -197,6 +237,15 @@ def test_1(mutation: int,
         if market in top_market_names and series:
             gens = range(1, len(series) + 1)
             plt.plot(gens, series, marker='o', label=market)
+
+    # Mark special generations (if any)
+    if cull_generation is not None and 1 <= cull_generation <= generations:
+        plt.axvline(cull_generation, linestyle='--', linewidth=1, label='Cull colonies')
+    if multiday_generation is not None and 1 <= multiday_generation <= generations:
+        plt.axvline(multiday_generation, linestyle=':', linewidth=1, label='Multiple days')
+    if pheromone_generation is not None and 1 <= pheromone_generation <= generations:
+        plt.axvline(pheromone_generation, linestyle='-.', linewidth=1, label='Pheromones')
+
     plt.xlabel('Generation')
     plt.ylabel('Max visited markets')
     plt.title(f'Max visited per starting market (mutation {mutation})')
@@ -232,4 +281,4 @@ def test_1(mutation: int,
     
 
 if __name__ == "__main__":
-    test_1(mutation=3, generations=10, verbose = 0)
+    test_1(mutation=3, generations=50,time_to_cull=10, time_to_set_mult_days=11 ,verbose = 0)
