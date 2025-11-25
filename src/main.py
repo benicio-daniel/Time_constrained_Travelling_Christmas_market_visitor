@@ -6,6 +6,8 @@ from src.classes.ant import Ant
 from src.classes.ant_colony import Ant_Colony
 from src.classes.ant_optimizer import Ant_Optimizer
 import os
+import pandas as pd
+import networkx as nx
 
 def cull_colonies(ant_optimizer:Ant_Optimizer,top_colonies:list[Ant_Colony], cut_off:float):
     for colonies in ant_optimizer.colonies:
@@ -128,7 +130,17 @@ def test_1(mutation: int,
 
             print("\nTop Markets (Names Only):")
             print([m for m, _ in top_markets])
+            
+            # Find best path of this generation
+            best_path, best_fitness = max(paths, key=lambda x: x[1])
+            print(best_path)
+            print("Best fitness:", best_fitness)
 
+            # best_path is already a list of (origin, destination)
+            edges = [(edge[0], edge[1]) for edge in best_path]
+            edges_df = pd.DataFrame(edges, columns=["origin", "destination"])
+        
+        
         # Always advance if not the last generation
         if gen != generations:
             optimizer.advance_to_next_generation()
@@ -204,7 +216,30 @@ def test_1(mutation: int,
     plt.savefig(max_plot_path)
     print(f"Saved max visited plot to: {max_plot_path}")
     plt.show()
+    
+    # ------------------------------------------------------------------
+    # 8) Plot best path
+    # ------------------------------------------------------------------
+    # after the loop over generations:
+    G_best = nx.from_pandas_edgelist(
+    edges_df,
+    source="origin",
+    target="destination",
+    create_using=nx.DiGraph()
+    ) # type: ignore
 
+    plt.figure(figsize=(8, 8))
+    pos = nx.spring_layout(G_best, seed=42)
+    nx.draw(G_best, pos, with_labels=True, node_size=1200, font_size=9, arrows=True)
+    plt.title(f"Best Path (fitness {best_fitness})")
+    plt.tight_layout()
+    
+    # Save
+    best_plot_path = os.path.join(data_dir, f"best_path_mut{mutation}_gen{generations}.png")
+    plt.savefig(best_plot_path, dpi=300, bbox_inches="tight")
+    print(f"Saved best path plot to: {best_plot_path}")
+    plt.show()
+    
 
 if __name__ == "__main__":
     test_1(mutation=2, generations=50, verbose = 0)
