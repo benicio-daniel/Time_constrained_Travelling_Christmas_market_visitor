@@ -14,7 +14,8 @@ class Ant_Optimizer:
                  generation:int=0,
                  mutation:int=1,
                  verbose:int = 1,
-                 ants_multiple_days:bool = False
+                 ants_multiple_days:bool = False,
+                 max_days:int = 1
                  ):
 
 
@@ -46,6 +47,7 @@ class Ant_Optimizer:
         self.verbose = verbose
         self.colonies = []  # list of AntColonies
         self.ants_multiple_days = ants_multiple_days
+        self.max_days = max_days
 
     def initialize_colonies(self, all_markets, open_times):
         """
@@ -84,7 +86,8 @@ class Ant_Optimizer:
                 initial_DNA=self.initial_DNA,
                 generation=self.generation,
                 mutation=self.mutation,
-                verbose = self.verbose
+                verbose = self.verbose,
+                max_days = self.max_days
             )
 
             self.colonies.append(colony)
@@ -118,6 +121,7 @@ class Ant_Optimizer:
         
         self.generation += 1
     
-    def set_ants_multiple_days(self):
+    def set_ants_multiple_days(self, amount_max_days: int):
+        self.max_days = amount_max_days
         for colony in self.colonies:
-            colony.set_multiple_days(self.ants_multiple_days)
+            colony.set_multiple_days(amount_max_days)

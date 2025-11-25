@@ -7,15 +7,15 @@ class Ant_Colony:
         self,
         maps_service_objekt:GoogleMaps,
         number_of_ants:int,
-        start_market:str|None=None,  # have to be initialized
-        start_time:str|None =None,    # have to be initialized
+        start_market:str,  
+        start_time:str,    
         stay_time:int=30,
         time_limit:str="23:00", # cause latest market closes there
         initial_DNA:list|None=None,
         generation:int=0,
         mutation:int=1,
         verbose:int= 2,
-        ants_multiple_days: bool = False
+        max_days: int = 1
     ):
         """
         Initialises an Ant_Colony object with the given parameters.
@@ -55,9 +55,10 @@ class Ant_Colony:
         self.generation = generation
         self.mutation = mutation
         self.verbose = verbose
-        self.ants_multiple_days = ants_multiple_days,
+        self.max_days = max_days
         # all the ants in this colony
         self.ants = self.spawn_ants()
+        
 
     def spawn_ants(self) -> list:
         """
@@ -83,7 +84,8 @@ class Ant_Colony:
                 DNA=self.initial_DNA.copy(),
                 generation=self.generation,
                 mutation=self.mutation,
-                verbose = self.verbose
+                verbose = self.verbose,
+                max_days= self.max_days
             )
 
             ants.append(ant)
@@ -229,12 +231,12 @@ class Ant_Colony:
             paths.append((edges, self.fitness(ant)))
         if self.verbose == 2:
             print(paths)
-
+        
 
         return paths
 
     
-    def set_multiple_days(self):
+    def set_multiple_days(self, amount_days:int):
         """
         Set the ants_multiple_days attribute for all ants in the AntColony.
 
@@ -245,5 +247,7 @@ class Ant_Colony:
         Returns:
             None
         """
+        self.max_days = amount_days
         for ant in self.ants:
-            ant.set_multiple_days(self.ants_multiple_days)
+            ant.set_multiple_days(amount_days)
+            

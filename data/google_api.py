@@ -91,7 +91,8 @@ def compute_pairwise_distance_matrix(
                 continue
 
             # 1) Walking request
-            walk_resp = gmaps.distance_matrix(
+            walk_resp = gmaps.distance_matrix( #type:ignore
+                                              
                 origins=[origin],
                 destinations=[destination],
                 mode="walking",
@@ -110,9 +111,9 @@ def compute_pairwise_distance_matrix(
             transit_kwargs = base_kwargs.copy()
             transit_kwargs["mode"] = "transit"
             if use_departure_now_for_driving:
-                transit_kwargs["departure_time"] = datetime.now()
+                transit_kwargs["departure_time"] = datetime.now() #type: ignore
 
-            transit_resp = gmaps.distance_matrix(
+            transit_resp = gmaps.distance_matrix( #type: ignore
                 origins=[origin],
                 destinations=[destination],
                 **transit_kwargs

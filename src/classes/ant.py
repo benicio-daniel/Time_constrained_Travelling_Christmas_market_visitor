@@ -17,7 +17,8 @@ class Ant:
             generation:int =0, 
             mutation:int =1,
             verbose:int = 0,
-            multiple_days:bool = False
+            max_days: int = 1,
+            days : int = 1
             ):
 
         # Surrounding context
@@ -79,7 +80,8 @@ class Ant:
         self.visited.append(start_market)
         self.path = [(start_market, start_time)]
         self.verbose = verbose
-        self.multiple_days = multiple_days
+        self.days = days
+        self.max_days = max_days
     def evaluate_possibilities(self): 
         """
         Evaluates all possible next markets that the ant can move to.
@@ -143,9 +145,10 @@ class Ant:
         options = self.evaluate_possibilities()
 
         if not options:
-            if (self.visited != self.maps.get_all_markets()[0].sort()) & (self.multiple_days == True):
+            if (self.visited != self.maps.get_all_markets()[0].sort()) &  (self.days < self.max_days):
                 self.start_market, self.start_time = random.choice(self.maps.get_all_markets(visited_markets=self.visited))
                 self.mutation = 3
+                self.days += 1
             else: return False # No valid moves available
         
         # Choose one destination
@@ -218,7 +221,7 @@ class Ant:
             
         return True  # Move was successful
     
-    def set_multiple_days(self, multiple_days:bool):
+    def set_multiple_days(self, amount_days:int):
         """
         Set the multiple_days attribute of the Ant.
 
@@ -228,7 +231,7 @@ class Ant:
         Returns:
             None
         """
-        self.multiple_days = multiple_days
+        self.max_days = amount_days
 
 if __name__ == "__main__":
     pass

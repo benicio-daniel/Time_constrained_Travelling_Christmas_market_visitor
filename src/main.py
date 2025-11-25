@@ -9,9 +9,9 @@ import os
 import pandas as pd
 import networkx as nx
 
-def cull_colonies(ant_optimizer:Ant_Optimizer,top_colonies:list[Ant_Colony], cut_off:float):
+def cull_colonies(ant_optimizer:Ant_Optimizer,top_colonies:list[tuple[str, float]]):
     for colonies in ant_optimizer.colonies:
-        if colonies.start_market not in top_colonies:
+        if colonies.start_market in (i[0] for i in top_colonies):
             colonies.remove(colonies)
         
 
@@ -23,10 +23,11 @@ def test_1(mutation: int,
            cut_off: float = 0.5,
            seed: int = 42,
            verbose_ants: int = 0,
-           verbose = 0,
+           verbose:int = 0,
            time_to_cull: int | None = None,
            set_multiple_days: bool = False,
-           time_to_set_mult_days: int | None = None) -> None:
+           time_to_set_mult_days: int | None = None,
+           multiple_days_limit: int = 3) -> None:
     
     """
     Runs a simulation of the Ant Colony Optimization algorithm on the given parameters.
@@ -48,7 +49,7 @@ def test_1(mutation: int,
     None
     """
     random.seed(seed)
-    print("Starting Test 1")
+    print("Starting Test 1 with mutation", mutation )
     # ------------------------------------------------------------------
     # 1) Load Google Maps
     # ------------------------------------------------------------------
@@ -82,8 +83,8 @@ def test_1(mutation: int,
     # ------------------------------------------------------------------
     print("Running Simulation...")
     for gen in range(1, generations + 1):
-        if gen == time_to_set_mult_days and set_multiple_days:
-            optimizer.set_ants_multiple_days()
+        if gen == time_to_set_mult_days or set_multiple_days:
+            optimizer.set_ants_multiple_days(multiple_days_limit)
 
         paths = optimizer.run_one_generation()  # gives paths for each colony
         print(f"Generation {gen} finished.")
@@ -119,7 +120,7 @@ def test_1(mutation: int,
         top_markets = results[:cutoff_count]
 
         if gen == time_to_cull and time_to_cull is not None:
-            cull_colonies(optimizer, top_markets, cut_off)
+            cull_colonies(optimizer, top_markets) #
 
         if gen == generations or verbose == 2:
             print("\n=== Colony Ranking by Avg Visited Markets ===")
@@ -127,9 +128,6 @@ def test_1(mutation: int,
 
             for market, avg_score in top_markets:
                 print(f"- {market:25s}  Ø visited: {avg_score:.2f}")
-
-            print("\nTop Markets (Names Only):")
-            print([m for m, _ in top_markets])
             
             # Find best path of this generation
             best_path, best_fitness = max(paths, key=lambda x: x[1])
@@ -168,13 +166,11 @@ def test_1(mutation: int,
         f"fitness_over_generations_mut{mutation}_gen{generations}.png"
     )
     plt.savefig(plot_path)
-    print(f"Saved fitness plot to: {plot_path}")
-    plt.show()
     # ------------------------------------------------------------------
     # 6) Plot avg visited per starting market over generations
     # ------------------------------------------------------------------
     # Filter to only top 50% of markets (final generation result)
-    top_market_names = [m for m, _ in top_markets]
+    top_market_names = [m for m, _ in top_markets] #type: ignore
 
     plt.figure()
     for market, series in avg_visited_history.items():
@@ -192,8 +188,6 @@ def test_1(mutation: int,
         f"avg_visited_per_market_mut{mutation}_gen{generations}.png"
     )
     plt.savefig(avg_plot_path)
-    print(f"Saved avg visited plot to: {avg_plot_path}")
-    plt.show()
     
     # ------------------------------------------------------------------
     # 7) Plot max visited per starting market over generations
@@ -214,32 +208,28 @@ def test_1(mutation: int,
         f"max_visited_per_market_mut{mutation}_gen{generations}.png"
     )
     plt.savefig(max_plot_path)
-    print(f"Saved max visited plot to: {max_plot_path}")
-    plt.show()
     
     # ------------------------------------------------------------------
     # 8) Plot best path
     # ------------------------------------------------------------------
     # after the loop over generations:
     G_best = nx.from_pandas_edgelist(
-    edges_df,
+    edges_df, #type: ignore
     source="origin",
     target="destination",
-    create_using=nx.DiGraph()
+    create_using=nx.DiGraph() # type:ignore
     ) # type: ignore
 
     plt.figure(figsize=(8, 8))
     pos = nx.spring_layout(G_best, seed=42)
-    nx.draw(G_best, pos, with_labels=True, node_size=1200, font_size=9, arrows=True)
-    plt.title(f"Best Path (fitness {best_fitness})")
+    nx.draw(G_best, pos, with_labels=True, node_size=1200, font_size=9, arrows=True) #type: ignore
+    plt.title(f"Best Path (fitness {best_fitness})") # type: ignore
     plt.tight_layout()
     
     # Save
     best_plot_path = os.path.join(data_dir, f"best_path_mut{mutation}_gen{generations}.png")
     plt.savefig(best_plot_path, dpi=300, bbox_inches="tight")
-    print(f"Saved best path plot to: {best_plot_path}")
-    plt.show()
     
 
 if __name__ == "__main__":
-    test_1(mutation=2, generations=50, verbose = 0)
+    test_1(mutation=3, generations=10, verbose = 0)
