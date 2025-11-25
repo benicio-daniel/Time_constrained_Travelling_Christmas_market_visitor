@@ -10,9 +10,11 @@ import pandas as pd
 import networkx as nx
 
 def cull_colonies(ant_optimizer:Ant_Optimizer,top_colonies:list[tuple[str, float]]):
-    for colonies in ant_optimizer.colonies:
-        if colonies.start_market in (i[0] for i in top_colonies):
-            ant_optimizer.colonies.remove(colonies)
+    keep_markets = {m for (m, _) in top_colonies}
+    ant_optimizer.colonies = [
+    c for c in ant_optimizer.colonies
+    if c.start_market in keep_markets
+]
         
 
 def test_1(mutation: int,
@@ -103,8 +105,9 @@ def test_1(mutation: int,
     # ------------------------------------------------------------------
     print("Running Simulation...")
     for gen in range(1, generations + 1):
-        if gen == time_to_set_mult_days or set_multiple_days:
+        if set_multiple_days or (time_to_set_mult_days is not None and gen >= time_to_set_mult_days):
             optimizer.set_ants_multiple_days(multiple_days_limit)
+            set_multiple_days = True
             print("Enabled multiple days for ants.")
 
         paths = optimizer.run_one_generation()  # gives paths for each colony

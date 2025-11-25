@@ -199,6 +199,7 @@ class Ant_Colony:
                 DNA=child_dna.copy(),
                 generation=self.generation + 1,
                 mutation=self.mutation,
+                max_days= self.max_days
             )
 
             new_ants.append(ant)
