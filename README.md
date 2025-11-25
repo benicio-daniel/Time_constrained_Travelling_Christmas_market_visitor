@@ -32,10 +32,6 @@ Todos: (Ben for better process)
 - [ ] choose the best X% starting markets and sporn a colony each and perform training by also updating pheromones & DNA (through mutations)
 - [ ] after training sporn single random ants to test results and play with parameters (only one gen therefore no DNA update)
 - [ ] test for multiple days (visited markets and start position add as init parameters)
-argue about:
-- Phase 1 = exploration
-- Phase 2 = exploitation
-- Phase 3 = respawn
 
 Optional todos:
 - [ ] tune alpha, beta and gamma in ant class for pheromone/ dna weights and fitness functions/ coss over etc
