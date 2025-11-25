@@ -27,8 +27,7 @@ Todos: (to make it work)
 - [ ] why only one market?
 
 Todos: (Ben for better process)
-- [ ] komm in gruppe 13 in tuwel, ich werde schon angeschrieben ob ich alleine bin
-- [ ] analysis needed? if not delete
+- [ ] check if crossover path is valid
 - [ ] does everything makes sense and is sufficient? (according to theory: eg, gene mutation / crossover and fitness function better? in ant colony class)
 - [ ] choose the best X% starting markets and sporn a colony each and perform training by also updating pheromones & DNA (through mutations)
 - [ ] after training sporn single random ants to test results and play with parameters (only one gen therefore no DNA update)
