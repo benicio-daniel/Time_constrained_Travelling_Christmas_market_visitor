@@ -161,9 +161,12 @@ def test_1(mutation: int,
     # ------------------------------------------------------------------
     # 6) Plot avg visited per starting market over generations
     # ------------------------------------------------------------------
+    # Filter to only top 50% of markets (final generation result)
+    top_market_names = [m for m, _ in top_markets]
+
     plt.figure()
     for market, series in avg_visited_history.items():
-        if series:  # only plot markets that have data
+        if market in top_market_names and series:
             gens = range(1, len(series) + 1)
             plt.plot(gens, series, marker='o', label=market)
     plt.xlabel('Generation')
@@ -185,7 +188,7 @@ def test_1(mutation: int,
     # ------------------------------------------------------------------
     plt.figure()
     for market, series in max_visited_history.items():
-        if series:  # only plot markets that have data
+        if market in top_market_names and series:
             gens = range(1, len(series) + 1)
             plt.plot(gens, series, marker='o', label=market)
     plt.xlabel('Generation')
