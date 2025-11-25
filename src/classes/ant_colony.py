@@ -5,16 +5,17 @@ from .ant import Ant
 class Ant_Colony:
     def __init__(
         self,
-        maps_service_objekt,
-        number_of_ants,
-        start_market=None,  # have to be initialized
-        start_time=None,    # have to be initialized
-        stay_time=30,
-        time_limit="23:00", # cause latest market closes there
-        initial_DNA=None,
-        generation=0,
-        mutation=1,
-        verbose = 2
+        maps_service_objekt:GoogleMaps,
+        number_of_ants:int,
+        start_market:str|None=None,  # have to be initialized
+        start_time:str|None =None,    # have to be initialized
+        stay_time:int=30,
+        time_limit:str="23:00", # cause latest market closes there
+        initial_DNA:list|None=None,
+        generation:int=0,
+        mutation:int=1,
+        verbose:int= 2,
+        ants_multiple_days: bool = False
     ):
         """
         Initialises an Ant_Colony object with the given parameters.
@@ -54,6 +55,7 @@ class Ant_Colony:
         self.generation = generation
         self.mutation = mutation
         self.verbose = verbose
+        self.ants_multiple_days = ants_multiple_days,
         # all the ants in this colony
         self.ants = self.spawn_ants()
 
@@ -162,7 +164,7 @@ class Ant_Colony:
         point_of_crossover = random.randint(0, min(len(dna1)-1, len(dna2)-1))
         return dna1[:point_of_crossover] + dna2[point_of_crossover:]
 
-    def next_generation(self):
+    def step_generation(self):
         """
         Advances the generation of the Ant Colony by one step.
 
@@ -200,7 +202,7 @@ class Ant_Colony:
             new_ants.append(ant)
 
         self.generation += 1
-        return new_ants
+        self.ants = new_ants
 
     def move_ants(self):
         """
@@ -230,12 +232,18 @@ class Ant_Colony:
 
 
         return paths
-    
-    def step_generation(self):
-        """
-        Advance the generation by one step and replace the old ants with the new ones.
 
+    
+    def set_multiple_days(self):
+        """
+        Set the ants_multiple_days attribute for all ants in the AntColony.
+
+        This attribute determines whether the ants can move multiple days or not.
+
+        Args:
+            None
         Returns:
             None
         """
-        self.ants = self.next_generation()
+        for ant in self.ants:
+            ant.set_multiple_days(self.ants_multiple_days)

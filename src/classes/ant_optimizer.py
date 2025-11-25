@@ -5,26 +5,34 @@ from .ant_colony import Ant_Colony
 
 class Ant_Optimizer:
     def __init__(self, 
-                 maps_service_objekt,
-                 num_colonies=10, 
-                 ants_per_colony=20,
-                 stay_time=30,
-                 time_limit="23:00", # cause latest market closes there
-                 initial_DNA=None,
-                 generation=0,
-                 mutation=1,
-                 verbose = 1
+                 maps_service_objekt:GoogleMaps,
+                 num_colonies:int=10, 
+                 ants_per_colony:int=20,
+                 stay_time:int=30,
+                 time_limit:str="23:00", # cause latest market closes there
+                 initial_DNA:list|None= None,
+                 generation:int=0,
+                 mutation:int=1,
+                 verbose:int = 1,
+                 ants_multiple_days:bool = False
                  ):
+
+
         """
         Initialises an AntOptimizer object with the given parameters.
 
         Args:
-            maps (GoogleMaps): The Google Maps service object.
-            markets (list): A list of all available markets.
-            num_colonies (int, optional): The number of ant colonies. Defaults to 10.
-            ants_per_colony (int, optional): The number of ants in each colony. Defaults to 20.
+            maps_service_objekt (GoogleMaps): The Google Maps service object.
+            num_colonies (int, optional): The number of colonies to generate. Defaults to 10.
+            ants_per_colony (int, optional): The number of ants per colony. Defaults to 20.
+            stay_time (int, optional): The time the ants spend at each market. Defaults to 30.
+            time_limit (str, optional): The overall time limit for the ants. Defaults to "23:00".
+            initial_DNA (list, optional): The initial DNA of the ants. Defaults to None.
+            generation (int, optional): The generation of the ants. Defaults to 0.
+            mutation (int, optional): The mutation type of the ants. Defaults to 1.
+            verbose (int, optional): The verbosity of the ants. Defaults to 1.
+            ants_multiple_days (bool, optional): Whether the ants can visit markets multiple times in a single day. Defaults to False.
         """
-
         self.maps = maps_service_objekt
 
         self.num_colonies = num_colonies
@@ -37,6 +45,7 @@ class Ant_Optimizer:
         self.mutation = mutation
         self.verbose = verbose
         self.colonies = []  # list of AntColonies
+        self.ants_multiple_days = ants_multiple_days
 
     def initialize_colonies(self, all_markets, open_times):
         """
@@ -81,7 +90,7 @@ class Ant_Optimizer:
             self.colonies.append(colony)
 
 
-    def run_one_generation(self):
+    def run_one_generation(self) -> list[tuple[list[tuple[str, str]], float]]:
         """
         Run one generation of the algorithm.
 
@@ -108,4 +117,7 @@ class Ant_Optimizer:
             colony.step_generation()
         
         self.generation += 1
-        print(f"Advanced to Generation: {self.generation +1}")
+    
+    def set_ants_multiple_days(self):
+        for colony in self.colonies:
+            colony.set_multiple_days(self.ants_multiple_days)

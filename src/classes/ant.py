@@ -8,18 +8,50 @@ class Ant:
     def __init__(
             self,
             name,
-            maps_service_objekt, 
-            start_market, 
-            start_time, 
-            stay_time=30, 
-            time_limit="23:00", # cause latest market closes there
-            DNA=None, 
-            generation=0, 
-            mutation=1,
-            verbose = 0
+            maps_service_objekt: GoogleMaps, 
+            start_market:str, 
+            start_time:str, 
+            stay_time:int=30, 
+            time_limit:str="23:00", # cause latest market closes there
+            DNA:list|None=None, 
+            generation:int =0, 
+            mutation:int =1,
+            verbose:int = 0,
+            multiple_days:bool = False
             ):
 
         # Surrounding context
+        """
+        Initialises an Ant object with the given parameters.
+
+        Args:
+            name (str): The name of the ant.
+            maps_service_objekt (GoogleMaps): The Google Maps service object.
+            start_market (str): The starting market of the ant.
+            start_time (str | time): The starting time of the ant. Can be given as a string ("HH:MM") or a datetime.time object.
+            stay_time (int, optional): The time the ant spends at each market. Defaults to 30.
+            time_limit (str, optional): The overall time limit for the ant. Defaults to "23:00".
+            DNA (list, optional): The initial DNA of the ant. Defaults to None.
+            generation (int, optional): The generation of the ants. Defaults to 0.
+            mutation (int, optional): The mutation type of the ants. Defaults to 1.
+            verbose (int, optional): The verbosity level of the ant. Defaults to 0.
+
+        Attributes:
+            maps (GoogleMaps): The Google Maps service object.
+            name (str): The name of the ant.
+            start_market (str): The starting market of the ant.
+            start_time (int): The starting time of the ant in minutes.
+            current_min (int): The current time of the ant in minutes.
+            current_market (str): The current market of the ant.
+            stay_time (int): The time the ant spends at each market.
+            time_limit_min (int): The overall time limit for the ant in minutes.
+            DNA (list): The DNA of the ant.
+            generation (int): The generation of the ants.
+            mutation (int): The mutation type of the ants.
+            verbose (int): The verbosity level of the ant.
+            visited (list): A list of all the markets the ant has visited.
+            path (list): A list of tuples containing the market and time the ant has visited.
+        """
         self.maps = maps_service_objekt
 
         # Initial setup for the ant
@@ -47,6 +79,7 @@ class Ant:
         self.visited.append(start_market)
         self.path = [(start_market, start_time)]
         self.verbose = verbose
+        self.multiple_days = multiple_days
     def evaluate_possibilities(self): 
         """
         Evaluates all possible next markets that the ant can move to.
@@ -110,7 +143,10 @@ class Ant:
         options = self.evaluate_possibilities()
 
         if not options:
-            return False  # No valid moves available
+            if (self.visited != self.maps.get_all_markets()[0].sort()) & (self.multiple_days == True):
+                self.start_market, self.start_time = random.choice(self.maps.get_all_markets(visited_markets=self.visited))
+                self.mutation = 3
+            else: return False # No valid moves available
         
         # Choose one destination
         if self.mutation == 1: # random choice
@@ -181,8 +217,18 @@ class Ant:
             print(f"Visited markets: {self.visited}\n")
             
         return True  # Move was successful
+    
+    def set_multiple_days(self, multiple_days:bool):
+        """
+        Set the multiple_days attribute of the Ant.
 
+        Args:
+            multiple_days (bool): Whether the Ant should move over multiple days.
+
+        Returns:
+            None
+        """
+        self.multiple_days = multiple_days
 
 if __name__ == "__main__":
-    test_ant = Ant(GoogleMaps(), "MQ", "10:00",verbose=True)
-    test_ant.move()
+    pass

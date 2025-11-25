@@ -86,7 +86,7 @@ class GoogleMaps:
                 ] += deposit
         self.df["pheromone"] = self.df["pheromone"].clip(lower=1, upper=self.max_pheromone)
 
-    def get_all_markets(self) -> tuple[list[str], list[time]]:
+    def get_all_markets(self, visited_markets:list[str]|None = None) -> tuple[list[str], list[time]]:
         """
         Returns two lists:
         - A list of all markets (strings)
@@ -94,7 +94,8 @@ class GoogleMaps:
         """
 
         grouped = self.df.groupby("destination")["opens"].first()
-
+        if visited_markets is not None:
+            grouped = grouped[~grouped.index.isin(visited_markets)]
         all_markets = grouped.index.tolist()
-        opening_times = grouped.values.tolist()
+        opening_times = grouped.tolist()
         return all_markets, opening_times
