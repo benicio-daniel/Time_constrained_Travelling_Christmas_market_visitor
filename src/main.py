@@ -284,4 +284,4 @@ def test_1(mutation: int,
     
 
 if __name__ == "__main__":
-    test_1(mutation=3, generations=50,time_to_cull=10, time_to_set_mult_days=11 ,verbose = 0)
+    test_1(mutation=2, generations=100,time_to_cull=10, time_to_set_mult_days=30 ,verbose = 0, cut_off=0.2, ants_per_colony = 50)
