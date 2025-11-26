@@ -207,7 +207,7 @@ class Ant_Colony:
         self.generation += 1
         self.ants = new_ants
 
-    def move_ants(self):
+    def move_ants(self) -> list[tuple[list[tuple[str, str]], float]]:
         """
         Move all ants in the AntColony one step forward.
 

@@ -68,22 +68,25 @@ class GoogleMaps:
         Update pheromones based on a list of (path, cost) tuples.
 
         Args:
-            paths: List of tuples (edges, cost)
+            paths: List of tuples (edges, fitness)
                    edges = [(origin, destination), ...]
-                   cost = numeric path cost (lower is better)
+                   fitness = how many markets visited
         """
         # 1) Evaporation
         self.df["pheromone"] *= self.decay_factor
 
         # 2) Deposit
-        for edges, cost in paths:
-            deposit = self.pheromone_constant / cost  # Q / L_k
+        for edges, fitness in paths:
+            deposit = self.pheromone_constant * fitness  # Q / L_k
             for (origin, destination) in edges:
                 self.df.loc[
                     (self.df["origin"] == origin) &
                     (self.df["destination"] == destination),
                     "pheromone"
-                ] += deposit
+                ] += deposit/ self.df.loc[
+                    (self.df["origin"] == origin) &
+                    (self.df["destination"] == destination),
+                    "duration_walking_min"]  
         self.df["pheromone"] = self.df["pheromone"].clip(lower=1, upper=self.max_pheromone)
 
     def get_all_markets(self, visited_markets:list[str]|None = None) -> tuple[list[str], list[time]]:

@@ -195,7 +195,7 @@ class Ant:
             next_market, travel_time, pheromone = random.choices(
                 options, weights=probabilities, k=1
             )[0]
-        elif self.mutation == 3: # based on feromone
+        elif self.mutation == 3: # based on pheromone
             alpha = 1.0  # pheromone influence
             beta = 2.0   # distance influence
 
