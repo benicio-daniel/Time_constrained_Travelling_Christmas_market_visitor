@@ -77,7 +77,7 @@ class GoogleMaps:
 
         # 2) Deposit
         for edges, fitness in paths:
-            deposit = self.pheromone_constant * fitness  # Q / L_k
+            deposit = self.pheromone_constant * fitness
             for (origin, destination) in edges:
                 self.df.loc[
                     (self.df["origin"] == origin) &
@@ -87,7 +87,6 @@ class GoogleMaps:
                     (self.df["origin"] == origin) &
                     (self.df["destination"] == destination),
                     "duration_walking_min"]  
-        self.df["pheromone"] = self.df["pheromone"].clip(lower=1, upper=self.max_pheromone)
 
     def get_all_markets(self, visited_markets:list[str]|None = None) -> tuple[list[str], list[time]]:
         """
