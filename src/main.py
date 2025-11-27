@@ -68,6 +68,15 @@ def test_1(mutation: int,
     avg_visited_history = {market: [] for market in all_markets}
     max_visited_history = {market: [] for market in all_markets}
 
+    # Prepare directory for plots
+    base_dir = os.path.dirname(__file__)
+    data_dir = os.path.join(base_dir, "..", "plots")
+    os.makedirs(data_dir, exist_ok=True)
+
+    # Track best overall path across generations
+    best_overall_path = None
+    best_overall_fitness = float("-inf")
+
     # ------------------------------------------------------------------
     # 2) Initialize Optimizer therefore Colonies
     # ------------------------------------------------------------------
@@ -147,23 +156,49 @@ def test_1(mutation: int,
             cull_colonies(optimizer, top_markets) 
             print("Colonies culled")
 
+        # Find best path of this generation (by fitness)
+        best_path, best_fitness = max(paths, key=lambda x: x[1])
+
         if gen == generations or verbose == 2:
+            print(best_path)
+            print("Best fitness:", best_fitness)
+            
             print("\n=== Colony Ranking by Avg Visited Markets ===")
             print(f"Top {cut_off * 100:.0f}% ({cutoff_count} von {len(results)} Startlocations)\n")
 
             for market, avg_score in top_markets:
                 print(f"- {market:25s}  Ø visited: {avg_score:.2f}")
-            
-            # Find best path of this generation
-            best_path, best_fitness = max(paths, key=lambda x: x[1])
-            print(best_path)
-            print("Best fitness:", best_fitness)
+        
 
-            # best_path is already a list of (origin, destination)
-            edges = [(edge[0], edge[1]) for edge in best_path]
+        # Update global best path and save when we have a new maximum
+        if best_fitness > best_overall_fitness:
+            best_overall_fitness = best_fitness
+            best_overall_path = best_path
+
+            # best_overall_path is already a list of (origin, destination)
+            edges = [(edge[0], edge[1]) for edge in best_overall_path]
             edges_df = pd.DataFrame(edges, columns=["origin", "destination"])
-        
-        
+
+            G_best = nx.from_pandas_edgelist(
+                edges_df,
+                source="origin",
+                target="destination",
+                create_using=nx.DiGraph()
+            )
+
+            plt.figure(figsize=(8, 8))
+            pos = nx.spring_layout(G_best, seed=42)
+            nx.draw(G_best, pos, with_labels=True, node_size=1200, font_size=9, arrows=True)
+            plt.title(f"Best Path (fitness {best_overall_fitness})")
+            plt.tight_layout()
+
+            best_plot_path = os.path.join(
+                data_dir,
+                f"best_path_mut{mutation}_gen{gen}.png"
+            )
+            plt.savefig(best_plot_path, dpi=300, bbox_inches="tight")
+            plt.close()
+
         # Always advance if not the last generation
         if gen != generations:
             optimizer.advance_to_next_generation()
@@ -191,10 +226,6 @@ def test_1(mutation: int,
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    # Save plot to ../data
-    base_dir = os.path.dirname(__file__)
-    data_dir = os.path.join(base_dir, "..", "plots")
-    os.makedirs(data_dir, exist_ok=True)
     plot_path = os.path.join(
         data_dir,
         f"fitness_over_generations_mut{mutation}_gen{generations}.png"
@@ -262,26 +293,32 @@ def test_1(mutation: int,
     plt.savefig(max_plot_path)
     
     # ------------------------------------------------------------------
-    # 8) Plot best path
+    # 8) Plot best overall path at the end (record-holder across gens)
     # ------------------------------------------------------------------
-    # after the loop over generations:
-    G_best = nx.from_pandas_edgelist(
-    edges_df, #type: ignore
-    source="origin",
-    target="destination",
-    create_using=nx.DiGraph() # type:ignore
-    ) # type: ignore
+    if best_overall_path is not None:
+        edges = [(edge[0], edge[1]) for edge in best_overall_path]
+        edges_df = pd.DataFrame(edges, columns=["origin", "destination"])
 
-    plt.figure(figsize=(8, 8))
-    pos = nx.spring_layout(G_best, seed=42)
-    nx.draw(G_best, pos, with_labels=True, node_size=1200, font_size=9, arrows=True) #type: ignore
-    plt.title(f"Best Path (fitness {best_fitness})") # type: ignore
-    plt.tight_layout()
-    
-    # Save
-    best_plot_path = os.path.join(data_dir, f"best_path_mut{mutation}_gen{generations}.png")
-    plt.savefig(best_plot_path, dpi=300, bbox_inches="tight")
+        G_best = nx.from_pandas_edgelist(
+            edges_df,
+            source="origin",
+            target="destination",
+            create_using=nx.DiGraph()
+        )
+
+        plt.figure(figsize=(8, 8))
+        pos = nx.spring_layout(G_best, seed=42)
+        nx.draw(G_best, pos, with_labels=True, node_size=1200, font_size=9, arrows=True)
+        plt.title(f"Best Path (fitness {best_overall_fitness}) - final")
+        plt.tight_layout()
+
+        best_plot_path = os.path.join(
+            data_dir,
+            f"best_path_mut{mutation}_gen{generations}_final.png"
+        )
+        plt.savefig(best_plot_path, dpi=300, bbox_inches="tight")
+        plt.close()
     
 
 if __name__ == "__main__":
-    test_1(mutation=2, generations=100,time_to_cull=10, time_to_set_mult_days=30 ,verbose = 0, cut_off=0.2, ants_per_colony = 50)
+    test_1(mutation=2, generations=50,time_to_cull=10, time_to_set_mult_days=25 ,verbose = 0, cut_off=0.2, ants_per_colony = 30)
