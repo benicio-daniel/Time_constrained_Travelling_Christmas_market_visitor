@@ -22,7 +22,7 @@ def test_1(mutation: int,
            ants_per_colony: int = 20,
            stay_time: int = 30,
            time_limit: str = "23:00", # cause latest market closes there
-           cut_off: float = 0.3,
+           cut_off: float = 0.4,
            seed: int = 42,
            verbose_ants: int = 0,
            verbose:int = 0,
@@ -379,9 +379,26 @@ def test_hybrid():
 
         stay_time=30
     )
-  
+
+# longer test of best approach
+def test_pure_pheromones_long():
+    test_1(
+        ants_per_colony=50,
+        generations=200,
+
+        # PURE PHEROMONES
+        mutation=3,
+        time_to_cull=60,
+
+        # switch event still plotted at same place (even if it's noop)
+        time_to_switch_pheromones=100,
+
+        time_to_set_mult_days=160,
+        set_multiple_days=False,
+        multiple_days_limit=2,
+
+        stay_time=30,
+    )
 
 if __name__ == "__main__":
-    test_pure_DNA()
-    test_pure_pheromones()
-    test_hybrid()
+    test_pure_pheromones_long()
