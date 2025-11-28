@@ -162,9 +162,31 @@ class Ant_Colony:
         dna1 = [m for (m, _) in parent1.path]
         dna2 = [m for (m, _) in parent2.path]
 
-        # Crossover (simple one-point crossover, may be improved)
-        point_of_crossover = random.randint(0, min(len(dna1)-1, len(dna2)-1))
-        return dna1[:point_of_crossover] + dna2[point_of_crossover:]
+        # if DNA too short, return the longer one
+        if len(dna1) < 2 or len(dna2) < 2:
+            return dna1 if len(dna1) > len(dna2) else dna2
+        
+        # random sequence of possible crossover points
+        max_point = min(len(dna1), len(dna2)) - 1
+        possible_points = list(range(1, max_point + 1))
+        random.shuffle(possible_points)
+
+        valid_child = None
+
+        # Check if poitn of crossover is a valid move
+        for point in possible_points:
+            left_end = dna1[point - 1]
+            right_start = dna2[point]
+
+            # Check: does the edge (left_end → right_start) exist in the map?
+            if (left_end, right_start) in set((row["origin"], row["destination"]) for _, row in self.maps.df.iterrows()):
+                return dna1[:point] + dna2[point:]
+
+        # If no valid crossover point found, return the longer DNA
+        if valid_child is None:
+            return dna1 if len(dna1) > len(dna2) else dna2
+
+        return valid_child
 
     def step_generation(self):
         """

@@ -26,8 +26,6 @@ You shall describe your design, coding and solution, together with an analysis o
 Todos: 
 - [ ] check if crossover path is valid
 - [ ] fitness funtion imporvment?
-- [ ] add abline of culling and pheromone switch (Ben)
-- [ ] fix google_maps api
 
 
 
