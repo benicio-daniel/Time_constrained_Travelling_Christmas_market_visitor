@@ -24,9 +24,11 @@ You shall describe your design, coding and solution, together with an analysis o
 
 -----------------------------------------------------------
 Todos: 
-- [ ] check if crossover path is valid
+- [ ] check if everything works as intended
 - [ ] fitness funtion imporvment?
-
+- [ ] welche tests machen wir/ was reporten? was ist eine sinnvolle trainingsgröße 
+- [ ] report hinzufügen 
+- [ ] report überarbeiten
 
 
 Optional todos:

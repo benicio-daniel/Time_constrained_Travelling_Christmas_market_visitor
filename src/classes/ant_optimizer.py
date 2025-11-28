@@ -47,7 +47,12 @@ class Ant_Optimizer:
         self.verbose = verbose
         self.colonies = []  # list of AntColonies
         self.ants_multiple_days = ants_multiple_days
-        self.max_days = max_days
+
+        if self.ants_multiple_days:
+            self.max_days = max_days
+        else:
+            self.max_days = 1
+
 
     def initialize_colonies(self, all_markets, open_times):
         """
