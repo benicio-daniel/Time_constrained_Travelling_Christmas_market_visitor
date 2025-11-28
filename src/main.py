@@ -320,9 +320,6 @@ def test_1(mutation: int,
         plt.close()
 
 def test_pure_DNA():
-    import random
-    random.seed(42)
-
     test_1(
         number_of_colonies=32,
         ants_per_colony=40,
@@ -344,9 +341,6 @@ def test_pure_DNA():
     )
 
 def test_pure_pheromones():
-    import random
-    random.seed(42)
-
     test_1(
         number_of_colonies=32,
         ants_per_colony=40,
@@ -368,9 +362,6 @@ def test_pure_pheromones():
 
 
 def test_hybrid():
-    import random
-    random.seed(42)
-
     test_1(
         number_of_colonies=32,
         ants_per_colony=40,
