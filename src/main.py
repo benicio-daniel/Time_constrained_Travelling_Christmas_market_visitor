@@ -29,7 +29,7 @@ def test_1(mutation: int,
            time_to_cull: int | None = None,
            set_multiple_days: bool = False,
            time_to_set_mult_days: int | None = None,
-           multiple_days_limit: int = 3,
+           multiple_days_limit: int = 2,
            time_to_switch_pheromones: int | None = None) -> None:
     
     """
@@ -321,60 +321,56 @@ def test_1(mutation: int,
 
 def test_pure_DNA():
     test_1(
-        number_of_colonies=32,
         ants_per_colony=40,
-        generations=200,
+        generations=100,
 
         # PURE DNA
-        start_mutation_type=2,
+        mutation=2,
+        time_to_cull=30,
 
         # switching points
-        time_to_switch_pheromones=80,  # switch from DNA → DNA (noop, but same timing)
-        mutation=2,                    # stays DNA after switch
+        time_to_switch_pheromones=50,  # switch from DNA → DNA (noop, but same timing)
 
-        time_to_set_mult_days=120,
+        time_to_set_mult_days=80,
         set_multiple_days=True,
         multiple_days_limit=2,
 
-        # Optional: same stay time
+        # Optional: same stay timepython -m src.main
         stay_time=30
     )
 
 def test_pure_pheromones():
     test_1(
-        number_of_colonies=32,
         ants_per_colony=40,
-        generations=200,
+        generations=100,
 
         # PURE PHEROMONES
-        start_mutation_type=3,
+        mutation=3,
+        time_to_cull=30,
 
         # switch event still plotted at same place (even if it's noop)
-        time_to_switch_pheromones=80,
-        mutation=3,
+        time_to_switch_pheromones=50,
 
-        time_to_set_mult_days=120,
+        time_to_set_mult_days=80,
         set_multiple_days=True,
         multiple_days_limit=2,
 
-        stay_time=30
+        stay_time=30,
     )
-
 
 def test_hybrid():
     test_1(
-        number_of_colonies=32,
         ants_per_colony=40,
-        generations=200,
+        generations=100,
 
         # HYBRID: DNA+Pheromone
-        start_mutation_type=4,   # mix early
+        mutation=4,
+        time_to_cull=30,
 
         # switch to PURE PHEROMONE at same time as others
-        time_to_switch_pheromones=80,
-        mutation=3,
+        time_to_switch_pheromones=50,
 
-        time_to_set_mult_days=120,
+        time_to_set_mult_days=80,
         set_multiple_days=True,
         multiple_days_limit=2,
 
