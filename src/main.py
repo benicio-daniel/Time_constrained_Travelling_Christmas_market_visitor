@@ -22,7 +22,7 @@ def test_1(mutation: int,
            ants_per_colony: int = 20,
            stay_time: int = 30,
            time_limit: str = "23:00", # cause latest market closes there
-           cut_off: float = 0.5,
+           cut_off: float = 0.3,
            seed: int = 42,
            verbose_ants: int = 0,
            verbose:int = 0,
@@ -100,11 +100,11 @@ def test_1(mutation: int,
     # When multiple days are enabled:
     # - if set_multiple_days is True from the start, treat generation 1 as the switch
     # - if time_to_set_mult_days is given, use that generation
-    multiday_generation = None
-    if set_multiple_days:
-        multiday_generation = 1
-    elif time_to_set_mult_days is not None:
+    if time_to_set_mult_days is not None:
         multiday_generation = time_to_set_mult_days
+    else:
+        multiday_generation = None
+
 
     # Pheromone switch (purely for visualization; actual switch handled elsewhere)
     pheromone_generation = time_to_switch_pheromones if time_to_switch_pheromones is not None else None
@@ -114,10 +114,13 @@ def test_1(mutation: int,
     # ------------------------------------------------------------------
     print("Running Simulation...")
     for gen in range(1, generations + 1):
-        if set_multiple_days or (time_to_set_mult_days is not None and gen >= time_to_set_mult_days):
-            optimizer.set_ants_multiple_days(multiple_days_limit)
-            set_multiple_days = True
-            print("Enabled multiple days for ants.")
+        # MULTIPLE DAYS ENABLED AFTER SPECIFIC GENERATION
+        if time_to_set_mult_days is not None and gen >= time_to_set_mult_days:
+            if not set_multiple_days:  # Only enable ONCE
+                optimizer.set_ants_multiple_days(multiple_days_limit)
+                print(f"Enabled multiple days at generation {gen}")
+                set_multiple_days = True
+
 
         paths = optimizer.run_one_generation()  # gives paths for each colony
         print(f"Generation {gen} finished.")
@@ -332,7 +335,7 @@ def test_pure_DNA():
         time_to_switch_pheromones=50,  # switch from DNA → DNA (noop, but same timing)
 
         time_to_set_mult_days=80,
-        set_multiple_days=True,
+        set_multiple_days=False,
         multiple_days_limit=2,
 
         # Optional: same stay timepython -m src.main
@@ -352,7 +355,7 @@ def test_pure_pheromones():
         time_to_switch_pheromones=50,
 
         time_to_set_mult_days=80,
-        set_multiple_days=True,
+        set_multiple_days=False,
         multiple_days_limit=2,
 
         stay_time=30,
@@ -371,7 +374,7 @@ def test_hybrid():
         time_to_switch_pheromones=50,
 
         time_to_set_mult_days=80,
-        set_multiple_days=True,
+        set_multiple_days=False,
         multiple_days_limit=2,
 
         stay_time=30
