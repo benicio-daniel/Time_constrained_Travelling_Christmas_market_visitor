@@ -383,3 +383,5 @@ def test_hybrid():
 
 if __name__ == "__main__":
     test_pure_DNA()
+    test_pure_pheromones()
+    test_hybrid()
