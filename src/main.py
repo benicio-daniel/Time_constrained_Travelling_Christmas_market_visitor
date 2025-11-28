@@ -318,7 +318,78 @@ def test_1(mutation: int,
         )
         plt.savefig(best_plot_path, dpi=300, bbox_inches="tight")
         plt.close()
-    
+
+def test_pure_DNA():
+    import random
+    random.seed(42)
+
+    test_1(
+        number_of_colonies=32,
+        ants_per_colony=40,
+        generations=200,
+
+        # PURE DNA
+        start_mutation_type=2,
+
+        # switching points
+        time_to_switch_pheromones=80,  # switch from DNA → DNA (noop, but same timing)
+        mutation=2,                    # stays DNA after switch
+
+        time_to_set_mult_days=120,
+        set_multiple_days=True,
+        multiple_days_limit=2,
+
+        # Optional: same stay time
+        stay_time=30
+    )
+
+def test_pure_pheromones():
+    import random
+    random.seed(42)
+
+    test_1(
+        number_of_colonies=32,
+        ants_per_colony=40,
+        generations=200,
+
+        # PURE PHEROMONES
+        start_mutation_type=3,
+
+        # switch event still plotted at same place (even if it's noop)
+        time_to_switch_pheromones=80,
+        mutation=3,
+
+        time_to_set_mult_days=120,
+        set_multiple_days=True,
+        multiple_days_limit=2,
+
+        stay_time=30
+    )
+
+
+def test_hybrid():
+    import random
+    random.seed(42)
+
+    test_1(
+        number_of_colonies=32,
+        ants_per_colony=40,
+        generations=200,
+
+        # HYBRID: DNA+Pheromone
+        start_mutation_type=4,   # mix early
+
+        # switch to PURE PHEROMONE at same time as others
+        time_to_switch_pheromones=80,
+        mutation=3,
+
+        time_to_set_mult_days=120,
+        set_multiple_days=True,
+        multiple_days_limit=2,
+
+        stay_time=30
+    )
+  
 
 if __name__ == "__main__":
-    test_1(mutation=2, generations=50,time_to_cull=10, time_to_set_mult_days=25 ,verbose = 0, cut_off=0.2, ants_per_colony = 30)
+    test_pure_DNA()
